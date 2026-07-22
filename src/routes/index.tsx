@@ -851,29 +851,190 @@ function GazeboSection() {
 /* ---------- Activities / Баня / Фурако ---------- */
 
 type ServiceCategory = "banya" | "summer" | "winter" | "activities";
+type ServicePriceRow = { label: string; price: string };
 type ServiceItem = {
   title: string;
   body: string;
   slug: string;
   categories: ServiceCategory[];
+  meta?: string;
+  prices?: ServicePriceRow[];
+  included?: string[];
+  notes?: string[];
 };
 
 const serviceItems: ServiceItem[] = [
-  { title: "Русская баня", body: "Парилка на дровах, комната отдыха, душевая, санузел. Вместимость до 10 человек.", slug: "banya", categories: ["banya"] },
-  { title: "Фурако", body: "Кедровая купель с подогревом на дровах. Подходит для отдыха 4–6 человек.", slug: "furako", categories: ["banya"] },
-  { title: "Веник (дуб / берёза)", body: "Свежие банные веники к парной — дубовый или берёзовый на выбор.", slug: "venik", categories: ["banya"] },
-  { title: "Гигиенический набор", body: "Одноразовый набор для гостей бани и коттеджа.", slug: "hygiene", categories: ["banya"] },
-  { title: "Гидроциклы", body: "Прогулки по воде с инструктором или самостоятельное катание в сезон.", slug: "jetski", categories: ["summer", "activities"] },
-  { title: "SUP-доска", body: "Спокойные прогулки по воде и красивые виды в тёплое время года.", slug: "sup", categories: ["summer", "activities"] },
-  { title: "Катамаран", body: "Неспешный отдых на воде для пары, семьи или небольшой компании.", slug: "catamaran", categories: ["summer", "activities"] },
-  { title: "Квадроциклы", body: "Маршруты по лесу и активный отдых на природе в сопровождении инструктора.", slug: "atv", categories: ["summer", "activities"] },
-  { title: "Детские квадроциклы", body: "Безопасные модели для юных гостей — катание по площадке.", slug: "atv-kids", categories: ["summer", "activities"] },
-  { title: "Бадминтон", body: "Ракетки и воланы — активный отдых на свежем воздухе для всей компании.", slug: "badminton", categories: ["summer", "activities"] },
-  { title: "Снегоходы", body: "Маршруты по тундре и лесу с инструктором в устойчивый снежный сезон.", slug: "snowmobile", categories: ["winter", "activities"] },
-  { title: "Беговые лыжи", body: "Прокат снаряжения и подготовленная лыжня рядом с базой.", slug: "ski", categories: ["winter", "activities"] },
-  { title: "Ватрушки", body: "Тюбинг с горки — простое и весёлое зимнее развлечение.", slug: "tubing", categories: ["winter", "activities"] },
-  { title: "Снежный банан", body: "Катание с ветерком за снегоходом — азарт для компании.", slug: "banana", categories: ["winter", "activities"] },
-  { title: "Тимбилдинг", body: "Программы активностей и командных игр под открытым небом.", slug: "teambuilding", categories: ["activities"] },
+  {
+    title: "Русская баня",
+    body: "Парилка на дровах, комната отдыха, душевая, санузел. Вместимость до 10 человек.",
+    slug: "banya",
+    categories: ["banya"],
+    meta: "На дровах · до 10 человек",
+    prices: [
+      { label: "Первый час", price: "4 000 ₽" },
+      { label: "Каждый следующий час", price: "3 000 ₽" },
+      { label: "Минимальный заказ — 2 часа", price: "от 7 000 ₽" },
+    ],
+    included: ["Чай", "Простыни", "Тапочки", "Головные уборы"],
+  },
+  {
+    title: "Фурако",
+    body: "Кедровая купель с подогревом на дровах. Подходит для отдыха 4–6 человек.",
+    slug: "furako",
+    categories: ["banya"],
+    meta: "Кедровая · до 4 человек",
+    prices: [
+      { label: "Вместе с арендой бани", price: "7 000 ₽" },
+      { label: "Без аренды бани, 3–5 часов", price: "8 000 ₽" },
+      { label: "С холодной водой", price: "4 000 ₽" },
+    ],
+    notes: ["Период действия тарифа на купель с холодной водой уточняется отдельно."],
+  },
+  {
+    title: "Веник (дуб / берёза)",
+    body: "Свежие банные веники к парной — дубовый или берёзовый на выбор.",
+    slug: "venik",
+    categories: ["banya"],
+    prices: [{ label: "Веник дубовый или берёзовый", price: "500 ₽" }],
+  },
+  {
+    title: "Гигиенический набор",
+    body: "Одноразовый набор для гостей бани и коттеджа.",
+    slug: "hygiene",
+    categories: ["banya"],
+    prices: [
+      { label: "Гигиенический набор", price: "250 ₽" },
+      { label: "Одноразовые тапочки", price: "50 ₽" },
+    ],
+    included: ["Гель для душа", "Шампунь", "Мыло", "Зубной набор"],
+  },
+  {
+    title: "Гидроциклы",
+    body: "Прогулки по воде с инструктором или самостоятельное катание в сезон.",
+    slug: "jetski",
+    categories: ["summer", "activities"],
+    meta: "Sea-Doo 130 · 1 шт.",
+    prices: [
+      { label: "30 мин с инструктором", price: "3 500 ₽" },
+      { label: "30 мин за рулём", price: "5 000 ₽" },
+      { label: "1 час за рулём", price: "10 000 ₽" },
+      { label: "Пассажир", price: "1 500 ₽" },
+    ],
+    included: ["Инструктаж", "Спасательный жилет"],
+    notes: ["Самостоятельное управление — с 18 лет."],
+  },
+  {
+    title: "SUP-доска",
+    body: "Спокойные прогулки по воде и красивые виды в тёплое время года.",
+    slug: "sup",
+    categories: ["summer", "activities"],
+    meta: "2 шт.",
+    prices: [
+      { label: "30 мин", price: "1 500 ₽" },
+      { label: "1 час", price: "2 500 ₽" },
+    ],
+    notes: ["Без спасательного жилета доски не выдаются."],
+  },
+  {
+    title: "Катамаран",
+    body: "Неспешный отдых на воде для пары, семьи или небольшой компании.",
+    slug: "catamaran",
+    categories: ["summer", "activities"],
+    meta: "2 шт. · по 2 человека",
+    prices: [
+      { label: "30 мин", price: "1 000 ₽" },
+      { label: "1 час", price: "1 500 ₽" },
+    ],
+  },
+  {
+    title: "Квадроциклы",
+    body: "Маршруты по лесу и активный отдых на природе в сопровождении инструктора.",
+    slug: "atv",
+    categories: ["summer", "activities"],
+    meta: "3 шт.",
+    prices: [
+      { label: "30 мин с инструктором", price: "2 500 ₽" },
+      { label: "30 мин за рулём", price: "3 500 ₽" },
+      { label: "1 час за рулём", price: "6 000 ₽" },
+    ],
+    notes: ["Возраст самостоятельного управления уточняется на месте."],
+  },
+  {
+    title: "Детские квадроциклы",
+    body: "Безопасные модели для юных гостей — катание по площадке.",
+    slug: "atv-kids",
+    categories: ["summer", "activities"],
+    meta: "От 6 лет",
+    prices: [
+      { label: "30 мин", price: "2 000 ₽" },
+      { label: "1 час", price: "3 500 ₽" },
+    ],
+    included: ["Инструктаж", "Шлем"],
+  },
+  {
+    title: "Бадминтон",
+    body: "Ракетки и воланы — активный отдых на свежем воздухе для всей компании.",
+    slug: "badminton",
+    categories: ["summer", "activities"],
+    prices: [{ label: "Набор на 1 час", price: "200 ₽" }],
+  },
+  {
+    title: "Снегоходы",
+    body: "Маршруты по тундре и лесу с инструктором в устойчивый снежный сезон.",
+    slug: "snowmobile",
+    categories: ["winter", "activities"],
+    meta: "RM-551",
+    prices: [
+      { label: "30 мин с инструктором", price: "2 500 ₽" },
+      { label: "1 час с инструктором", price: "4 000 ₽" },
+      { label: "30 мин за рулём", price: "3 000 ₽" },
+      { label: "1 час за рулём", price: "5 000 ₽" },
+      { label: "Пассажир", price: "1 000 ₽" },
+    ],
+    included: ["Шлемы"],
+    notes: ["Самостоятельное управление — с 18 лет."],
+  },
+  {
+    title: "Детский снегоход",
+    body: "Отдельная техника для юных гостей — катание под присмотром.",
+    slug: "snowmobile-kids",
+    categories: ["winter", "activities"],
+    meta: "От 7 лет",
+    prices: [{ label: "30 мин", price: "1 000 ₽" }],
+  },
+  {
+    title: "Беговые лыжи",
+    body: "Прокат снаряжения и подготовленная лыжня рядом с базой.",
+    slug: "ski",
+    categories: ["winter", "activities"],
+    meta: "7 комплектов",
+    prices: [{ label: "Комплект", price: "300 ₽" }],
+    notes: ["Тариф действует за час или за сутки — уточняется на месте."],
+  },
+  {
+    title: "Ватрушки",
+    body: "Тюбинг с горки — простое и весёлое зимнее развлечение.",
+    slug: "tubing",
+    categories: ["winter", "activities"],
+    prices: [{ label: "1 час", price: "300 ₽" }],
+  },
+  {
+    title: "Снежный банан",
+    body: "Катание с ветерком за снегоходом — азарт для компании.",
+    slug: "banana",
+    categories: ["winter", "activities"],
+    meta: "До 3 человек",
+    prices: [{ label: "20 минут, с человека", price: "500 ₽" }],
+  },
+  {
+    title: "Тимбилдинг",
+    body: "Программы активностей и командных игр под открытым небом.",
+    slug: "teambuilding",
+    categories: ["activities"],
+    prices: [{ label: "Программа", price: "27 000 ₽" }],
+    included: ["Соревновательная программа", "2 ведущих", "DJ", "Фотограф"],
+    notes: ["Длительность и количество участников согласуются отдельно."],
+  },
 ];
 
 function ActivitiesSection() {
