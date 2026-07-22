@@ -912,28 +912,6 @@ function TransferSection() {
   );
 }
 
-/* ---------- Extras ---------- */
-
-function ExtrasSection() {
-  return (
-    <Section
-      id="extras"
-      eyebrow="Дополнительно"
-      title="Мелочи для комфортного отдыха"
-      lede="Всё, что можно докупить на месте. Уточняйте наличие при заезде."
-    >
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {extrasRows.map(([label, price]) => (
-          <div key={label} className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5">
-            <p className="text-sm text-resin-200/80">{label}</p>
-            <p className="mt-3 font-mono text-lg font-semibold tabular-nums text-teal">{price}</p>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
 /* ---------- Trust ---------- */
 
 function TrustSection() {
