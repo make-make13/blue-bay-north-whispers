@@ -510,14 +510,8 @@ function StayCard({ stay }: { stay: Stay }) {
 
 function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
   const [active, setActive] = useState(0);
-  const slides = [
-    `${stay.name} · гостиная`,
-    `${stay.name} · спальня`,
-    `${stay.name} · кухня`,
-    `${stay.name} · санузел`,
-    `${stay.name} · внешний вид`,
-    `${stay.name} · беседка`,
-  ];
+  const slides = pics(stay.slug);
+  const hasImages = slides.length > 0;
   return (
     <div
       className="fixed inset-0 z-50 grid place-items-center bg-resin-950/85 p-4 backdrop-blur-sm"
