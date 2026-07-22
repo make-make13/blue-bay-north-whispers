@@ -722,11 +722,18 @@ function GazeboIcon({ kind }: { kind: "house" | "house2" | "crown" | "people" })
 }
 
 function GazeboSection() {
-  const [slide, setSlide] = useState(0);
   const [active, setActive] = useState(0);
-  const total = GAZEBO_SLIDES.length;
+  const [slide, setSlide] = useState(0);
+  const currentImages = pics(GAZEBO_CARDS[active].slug);
+  const total = Math.max(currentImages.length, 1);
+  const safeSlide = Math.min(slide, total - 1);
   const prev = () => setSlide((s) => (s - 1 + total) % total);
   const next = () => setSlide((s) => (s + 1) % total);
+
+  const selectCard = (i: number) => {
+    setActive(i);
+    setSlide(0);
+  };
 
   return (
     <Section
@@ -739,56 +746,60 @@ function GazeboSection() {
         {/* Left: image carousel */}
         <div className="rounded-3xl border border-resin-800 bg-[color:var(--color-surface)] p-4 sm:p-5">
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-resin-800">
-            <Placeholder label={GAZEBO_SLIDES[slide]} className="absolute inset-0" />
-            <button
-              type="button"
-              aria-label="Предыдущее фото"
-              onClick={prev}
-              className="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
-                <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              aria-label="Следующее фото"
-              onClick={next}
-              className="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
-                <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+            {currentImages[safeSlide] ? (
+              <img
+                src={currentImages[safeSlide]}
+                alt={GAZEBO_CARDS[active].title}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            ) : (
+              <Placeholder label={GAZEBO_CARDS[active].title} className="absolute inset-0" />
+            )}
+            {total > 1 && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Предыдущее фото"
+                  onClick={prev}
+                  className="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                    <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Следующее фото"
+                  onClick={next}
+                  className="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </>
+            )}
             <span className="absolute bottom-4 right-4 rounded-full border border-resin-200/15 bg-resin-950/70 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-100 backdrop-blur">
-              {slide + 1} / {total}
+              {safeSlide + 1} / {total}
             </span>
           </div>
-          <div className="mt-4 grid grid-cols-4 gap-3">
-            {GAZEBO_SLIDES.map((label, i) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => setSlide(i)}
-                aria-label={`Открыть фото ${i + 1}`}
-                className={`relative aspect-[4/3] overflow-hidden rounded-xl border transition-colors ${
-                  slide === i ? "border-teal" : "border-resin-800 hover:border-resin-400"
-                }`}
-              >
-                <Placeholder label={label} className="absolute inset-0" />
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 flex justify-center gap-2">
-            {GAZEBO_SLIDES.map((_, i) => (
-              <span
-                key={i}
-                className={`h-1.5 rounded-full transition-all ${
-                  slide === i ? "w-6 bg-teal" : "w-1.5 bg-resin-800"
-                }`}
-              />
-            ))}
-          </div>
+          {currentImages.length > 1 && (
+            <div className="mt-4 grid grid-cols-4 gap-3">
+              {currentImages.slice(0, 4).map((src, i) => (
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setSlide(i)}
+                  aria-label={`Открыть фото ${i + 1}`}
+                  className={`relative aspect-[4/3] overflow-hidden rounded-xl border transition-colors ${
+                    safeSlide === i ? "border-teal" : "border-resin-800 hover:border-resin-400"
+                  }`}
+                >
+                  <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right: cards */}
