@@ -922,9 +922,13 @@ function ActivitiesSection() {
             className="group flex flex-col overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] transition-colors hover:border-teal/40"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-resin-900 to-[#0a1514]">
-              <div className="absolute inset-0 grid place-items-center text-center text-xs font-mono uppercase tracking-widest text-resin-200/40">
-                {item.image}
-              </div>
+              {pics(item.slug)[0] ? (
+                <img src={pics(item.slug)[0]} alt={item.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              ) : (
+                <div className="absolute inset-0 grid place-items-center text-center text-xs font-mono uppercase tracking-widest text-resin-200/40">
+                  {item.title}
+                </div>
+              )}
             </div>
             <div className="flex flex-1 flex-col p-5">
               <h3 className="mb-2 text-base font-semibold text-resin-50">{item.title}</h3>
