@@ -2,6 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import logoAsset from "@/assets/golubaya-buhta-logo.webp.asset.json";
 import heroAsset from "@/assets/hero-gb-cottages.webp.asset.json";
+import galleryData from "@/assets/gallery.json";
+
+const gallery = galleryData as Record<string, string[]>;
+const pics = (slug: string): string[] => gallery[slug] ?? [];
 
 
 export const Route = createFileRoute("/")({
