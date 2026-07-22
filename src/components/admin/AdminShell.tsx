@@ -5,14 +5,14 @@ import { useEffect } from "react";
 import { useAuth } from "../../lib/auth/AuthContext";
 import { USE_MOCK } from "../../lib/api";
 
-const NAV = [
+const NAV: { to: string; label: string; exact?: boolean }[] = [
   { to: "/admin", label: "Обзор", exact: true },
   { to: "/admin/cottages", label: "Коттеджи" },
   { to: "/admin/services", label: "Услуги" },
   { to: "/admin/prices", label: "Цены" },
   { to: "/admin/gallery", label: "Галерея" },
   { to: "/admin/settings", label: "Настройки" },
-] as const;
+];
 
 export function AdminShell({ title, children }: { title: string; children: ReactNode }) {
   const { user, loading, logout } = useAuth();
