@@ -215,13 +215,12 @@ const stays: Stay[] = [
     slug: "townhouse-3",
     code: "№3/3",
     kind: "townhouse",
-    name: "Блок таунхауса №3/3",
+    name: "Блок №3/3",
     capacity: 6,
-    price: 19000,
-    priceUnit: "/ блок / сутки",
-    tagline: "Уютный блок с собственной сауной",
+    price: 22000,
+    tagline: "Двухэтажный комфорт с сауной",
     description:
-      "Три спальни, просторный зал и сауна — удобный формат отдыха для небольшой компании.",
+      "Просторный двухэтажный блок с отдельными спальными местами, сауной и двумя душевыми.",
     bullets: [
       "3 комнаты · 6 односпальных кроватей",
       "2 душевые, 2 санузла",
@@ -242,13 +241,12 @@ const stays: Stay[] = [
     slug: "townhouse-3",
     code: "№3/4",
     kind: "townhouse",
-    name: "Блок таунхауса №3/4",
+    name: "Блок №3/4",
     capacity: 6,
-    price: 19000,
-    priceUnit: "/ блок / сутки",
-    tagline: "Уютный блок с собственной сауной",
+    price: 22000,
+    tagline: "Двухэтажный комфорт с сауной",
     description:
-      "Три спальни, просторный зал и сауна — удобный формат отдыха для небольшой компании.",
+      "Просторный двухэтажный блок с отдельными спальными местами, сауной и двумя душевыми.",
     bullets: [
       "3 комнаты · 1 двуспальная + 4 односпальные",
       "2 душевые, 2 санузла",
@@ -269,13 +267,12 @@ const stays: Stay[] = [
     slug: "townhouse-3",
     code: "№3/5",
     kind: "townhouse",
-    name: "Блок таунхауса №3/5",
+    name: "Блок №3/5",
     capacity: 6,
-    price: 19000,
-    priceUnit: "/ блок / сутки",
-    tagline: "Уютный блок с собственной сауной",
+    price: 22000,
+    tagline: "Двухэтажный комфорт с сауной",
     description:
-      "Три спальни, просторный зал и сауна — удобный формат отдыха для небольшой компании.",
+      "Просторный двухэтажный блок с отдельными спальными местами, сауной и двумя душевыми.",
     bullets: [
       "3 комнаты · 1 двуспальная + 4 односпальные",
       "2 душевые, 2 санузла",
@@ -288,6 +285,33 @@ const stays: Stay[] = [
       { group: "bath", title: "Санузлы", items: ["2 душевые", "2 санузла"] },
       { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Чайник", "Посудомоечная машина", "Сушильный шкаф для одежды"] },
       { group: "media", title: "Медиа и комфорт", items: ["Электрическая сауна", "ЖК-телевизор", "Музыкальный центр"] },
+      { group: "outdoor", title: "На улице", items: ["Мангал"] },
+    ],
+  },
+  {
+    id: "t3-main",
+    slug: "townhouse-3",
+    code: "Таунхаус №3",
+    kind: "townhouse",
+    name: "Таунхаус №3",
+    capacity: 6,
+    price: 19000,
+    priceUnit: "/ блок / сутки",
+    tagline: "Уютный блок с собственной сауной",
+    description:
+      "Три спальни, просторный зал и сауна — удобный формат отдыха для небольшой компании.",
+    bullets: [
+      "3 спальни",
+      "Просторный зал",
+      "Электросауна",
+      "Мангал",
+    ],
+    tags: ["сауна"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["3 спальные комнаты"] },
+      { group: "bath", title: "Санузлы", items: ["Душевая", "Санузел"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Чайник"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Электрическая сауна", "ЖК-телевизор", "Просторный зал"] },
       { group: "outdoor", title: "На улице", items: ["Мангал"] },
     ],
   },
@@ -447,7 +471,7 @@ function StayCard({ stay }: { stay: Stay }) {
             {stay.kind === "cottage" ? "Коттедж" : "Таунхаус"}
           </span>
           <span className="absolute right-3 top-3 rounded-full bg-teal px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-resin-950">
-            {formatPrice(stay.price)}<span className="opacity-70"> / сут</span>
+            {formatPrice(stay.price)}<span className="opacity-70"> {stay.priceUnit ?? "/ сут"}</span>
           </span>
         </div>
 
@@ -458,20 +482,13 @@ function StayCard({ stay }: { stay: Stay }) {
               до {stay.capacity} гостей
             </span>
           </header>
-          <ul className="space-y-1.5 text-sm text-resin-200/75">
-            {stay.bullets.map((b) => (
-              <li key={b} className="flex gap-2">
-                <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
-            {stay.tags.map((t) => (
-              <span key={t} className="rounded-full border border-resin-800 px-2.5 py-0.5 text-[11px] text-resin-200/60">
-                {t}
-              </span>
-            ))}
+          <p className="text-sm font-medium text-teal">{stay.tagline}</p>
+          <p className="text-sm leading-relaxed text-resin-200/75">{stay.description}</p>
+          <div className="mt-auto flex items-baseline gap-2 pt-2">
+            <span className="font-mono text-xl font-semibold tabular-nums text-resin-50">
+              {formatPrice(stay.price)}
+            </span>
+            <span className="text-xs text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</span>
           </div>
           <div className="mt-2 flex gap-2">
             <a
