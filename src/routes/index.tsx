@@ -56,6 +56,7 @@ type Stay = {
 const stays: Stay[] = [
   {
     id: "c1",
+    slug: "cottage-1",
     code: "Коттедж №1",
     kind: "cottage",
     name: "Коттедж №1",
@@ -81,6 +82,7 @@ const stays: Stay[] = [
   },
   {
     id: "c2",
+    slug: "cottage-2",
     code: "Коттедж №2",
     kind: "cottage",
     name: "Коттедж №2",
@@ -106,6 +108,7 @@ const stays: Stay[] = [
   },
   {
     id: "c6",
+    slug: "cottage-6",
     code: "Коттедж №6",
     kind: "cottage",
     name: "Коттедж №6",
@@ -131,6 +134,7 @@ const stays: Stay[] = [
   },
   {
     id: "c5",
+    slug: "cottage-5",
     code: "Коттедж №5",
     kind: "cottage",
     name: "Коттедж №5",
@@ -156,6 +160,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-vip",
+    slug: "townhouse-3-vip",
     code: "№3 VIP",
     kind: "townhouse",
     name: "VIP-блок таунхауса №3",
@@ -181,6 +186,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-2",
+    slug: "townhouse-3-comfort",
     code: "№3/2",
     kind: "townhouse",
     name: "Блок таунхауса №3/2",
@@ -206,6 +212,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-3",
+    slug: "townhouse-3",
     code: "№3/3",
     kind: "townhouse",
     name: "Блок таунхауса №3/3",
@@ -232,6 +239,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-4",
+    slug: "townhouse-3",
     code: "№3/4",
     kind: "townhouse",
     name: "Блок таунхауса №3/4",
@@ -258,6 +266,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-5",
+    slug: "townhouse-3",
     code: "№3/5",
     kind: "townhouse",
     name: "Блок таунхауса №3/5",
