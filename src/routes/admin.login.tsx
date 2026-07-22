@@ -36,17 +36,22 @@ function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4 text-neutral-100">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-slate-900">
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-sm rounded-xl border border-neutral-800 bg-neutral-900/70 p-8 shadow-lg"
+        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
       >
-        <div className="mb-6">
-          <div className="text-xs uppercase tracking-widest text-neutral-500">Админпанель</div>
-          <h1 className="mt-1 text-xl font-semibold">Голубая Бухта</h1>
+        <div className="mb-6 flex items-center gap-3">
+          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-teal-600 text-white">
+            <span className="text-lg font-bold">ГБ</span>
+          </div>
+          <div>
+            <div className="text-lg font-semibold">Голубая Бухта</div>
+            <div className="text-sm text-slate-500">Вход в панель управления</div>
+          </div>
         </div>
         <div className="space-y-4">
-          <Field label="Email">
+          <Field label="Электронная почта">
             <TextInput
               type="email"
               autoComplete="email"
@@ -65,19 +70,23 @@ function LoginPage() {
             />
           </Field>
           {error && (
-            <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
               {error}
             </div>
           )}
-          <Button type="submit" disabled={submitting} className="w-full">
+          <Button type="submit" size="lg" disabled={submitting} className="w-full">
             {submitting ? "Входим…" : "Войти"}
           </Button>
         </div>
         {USE_MOCK && (
-          <p className="mt-6 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-amber-300">
-            Демо-режим (mock API). Логин: <b>{DEMO_CREDENTIALS.email}</b>, пароль:{" "}
-            <b>{DEMO_CREDENTIALS.password}</b>
-          </p>
+          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <div className="font-medium">Демонстрационный доступ</div>
+            <div className="mt-1">
+              Логин: <b>{DEMO_CREDENTIALS.email}</b>
+              <br />
+              Пароль: <b>{DEMO_CREDENTIALS.password}</b>
+            </div>
+          </div>
         )}
       </form>
     </div>
