@@ -2,6 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import logoAsset from "@/assets/golubaya-buhta-logo.webp.asset.json";
 import heroAsset from "@/assets/hero-gb-cottages.webp.asset.json";
+import galleryData from "@/assets/gallery.json";
+
+const gallery = galleryData as Record<string, string[]>;
+const pics = (slug: string): string[] => gallery[slug] ?? [];
 
 
 export const Route = createFileRoute("/")({
@@ -46,11 +50,13 @@ type Stay = {
   bullets: string[];
   tags: string[];
   details: DetailGroup[];
+  slug: string;
 };
 
 const stays: Stay[] = [
   {
     id: "c1",
+    slug: "cottage-1",
     code: "Коттедж №1",
     kind: "cottage",
     name: "Коттедж №1",
@@ -76,6 +82,7 @@ const stays: Stay[] = [
   },
   {
     id: "c2",
+    slug: "cottage-2",
     code: "Коттедж №2",
     kind: "cottage",
     name: "Коттедж №2",
@@ -101,6 +108,7 @@ const stays: Stay[] = [
   },
   {
     id: "c6",
+    slug: "cottage-6",
     code: "Коттедж №6",
     kind: "cottage",
     name: "Коттедж №6",
@@ -126,6 +134,7 @@ const stays: Stay[] = [
   },
   {
     id: "c5",
+    slug: "cottage-5",
     code: "Коттедж №5",
     kind: "cottage",
     name: "Коттедж №5",
@@ -151,6 +160,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-vip",
+    slug: "townhouse-3-vip",
     code: "№3 VIP",
     kind: "townhouse",
     name: "VIP-блок таунхауса №3",
@@ -176,6 +186,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-2",
+    slug: "townhouse-3-comfort",
     code: "№3/2",
     kind: "townhouse",
     name: "Блок таунхауса №3/2",
@@ -201,6 +212,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-3",
+    slug: "townhouse-3",
     code: "№3/3",
     kind: "townhouse",
     name: "Блок таунхауса №3/3",
@@ -227,6 +239,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-4",
+    slug: "townhouse-3",
     code: "№3/4",
     kind: "townhouse",
     name: "Блок таунхауса №3/4",
@@ -253,6 +266,7 @@ const stays: Stay[] = [
   },
   {
     id: "t3-5",
+    slug: "townhouse-3",
     code: "№3/5",
     kind: "townhouse",
     name: "Блок таунхауса №3/5",
@@ -431,14 +445,16 @@ function StaysSection() {
 
 function StayCard({ stay }: { stay: Stay }) {
   const [open, setOpen] = useState(false);
+  const cover = pics(stay.slug)[0];
   return (
     <>
       <article className="group flex flex-col overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] transition-colors hover:border-teal/50">
         <div className="relative aspect-[4/3] overflow-hidden">
-          <Placeholder
-            label={stay.kind === "cottage" ? "Фото · коттедж" : "Фото · блок таунхауса"}
-            className="absolute inset-0"
-          />
+          {cover ? (
+            <img src={cover} alt={stay.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          ) : (
+            <Placeholder label={stay.kind === "cottage" ? "Фото · коттедж" : "Фото · блок таунхауса"} className="absolute inset-0" />
+          )}
           <span className="absolute left-3 top-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-resin-200 backdrop-blur">
             {stay.kind === "cottage" ? "Коттедж" : "Таунхаус"}
           </span>
@@ -494,14 +510,8 @@ function StayCard({ stay }: { stay: Stay }) {
 
 function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
   const [active, setActive] = useState(0);
-  const slides = [
-    `${stay.name} · гостиная`,
-    `${stay.name} · спальня`,
-    `${stay.name} · кухня`,
-    `${stay.name} · санузел`,
-    `${stay.name} · внешний вид`,
-    `${stay.name} · беседка`,
-  ];
+  const slides = pics(stay.slug);
+  const hasImages = slides.length > 0;
   return (
     <div
       className="fixed inset-0 z-50 grid place-items-center bg-resin-950/85 p-4 backdrop-blur-sm"
@@ -606,23 +616,31 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
           {/* Right: gallery */}
           <div className="flex gap-3">
             <div className="relative flex-1 overflow-hidden rounded-2xl border border-resin-800">
-              <Placeholder label={slides[active]} className="absolute inset-0" />
+              {hasImages ? (
+                <img src={slides[active]} alt={`${stay.name} — фото ${active + 1}`} className="absolute inset-0 h-full w-full object-cover" />
+              ) : (
+                <Placeholder label={stay.name} className="absolute inset-0" />
+              )}
               <span className="absolute bottom-3 left-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200 backdrop-blur">
-                {active + 1} / {slides.length}
+                {Math.min(active + 1, Math.max(slides.length, 1))} / {Math.max(slides.length, 1)}
               </span>
             </div>
             <div className="flex w-20 flex-col gap-2 md:w-24">
-              {slides.slice(0, 5).map((label, i) => (
+              {(hasImages ? slides.slice(0, 5) : [0,1,2,3,4]).map((src, i) => (
                 <button
-                  key={label}
+                  key={i}
                   type="button"
                   onClick={() => setActive(i)}
                   className={`relative aspect-square overflow-hidden rounded-xl border transition-colors ${
                     active === i ? "border-teal ring-2 ring-teal/40" : "border-resin-800 hover:border-resin-200/40"
                   }`}
-                  aria-label={label}
+                  aria-label={`Фото ${i + 1}`}
                 >
-                  <Placeholder label="" className="absolute inset-0" />
+                  {hasImages ? (
+                    <img src={src as string} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                  ) : (
+                    <Placeholder label="" className="absolute inset-0" />
+                  )}
                 </button>
               ))}
               {slides.length > 5 && (
@@ -643,22 +661,16 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
 
 /* ---------- Gazebos ---------- */
 
-const GAZEBO_SLIDES = [
-  "Беседка · внешний вид",
-  "Беседка · внутри, стол и лавки",
-  "Беседка · мангал",
-  "Беседка · вечер у огня",
-];
-
 const GAZEBO_CARDS: {
   title: string;
   body: string;
   icon: "house" | "house2" | "crown" | "people";
+  slug: string;
 }[] = [
-  { title: "Беседка №1*", body: "Закреплена за Коттеджем №1.", icon: "house" },
-  { title: "Беседка №2*", body: "Закреплена за Коттеджем №2.", icon: "house2" },
-  { title: "Беседка VIP*", body: "Закреплена за VIP-блоком №3.", icon: "crown" },
-  { title: "Общая беседка", body: "Доступна по предварительному запросу.", icon: "people" },
+  { title: "Беседка №1*", body: "Закреплена за Коттеджем №1.", icon: "house", slug: "gazebo-1" },
+  { title: "Беседка №2*", body: "Закреплена за Коттеджем №2.", icon: "house2", slug: "gazebo-2" },
+  { title: "Беседка VIP*", body: "Закреплена за VIP-блоком №3.", icon: "crown", slug: "gazebo-vip" },
+  { title: "Общая беседка", body: "Доступна по предварительному запросу.", icon: "people", slug: "gazebo-3" },
 ];
 
 function DetailIcon({ kind }: { kind: "beds" | "bath" | "kitchen" | "media" | "outdoor" }) {
@@ -710,11 +722,18 @@ function GazeboIcon({ kind }: { kind: "house" | "house2" | "crown" | "people" })
 }
 
 function GazeboSection() {
-  const [slide, setSlide] = useState(0);
   const [active, setActive] = useState(0);
-  const total = GAZEBO_SLIDES.length;
+  const [slide, setSlide] = useState(0);
+  const currentImages = pics(GAZEBO_CARDS[active].slug);
+  const total = Math.max(currentImages.length, 1);
+  const safeSlide = Math.min(slide, total - 1);
   const prev = () => setSlide((s) => (s - 1 + total) % total);
   const next = () => setSlide((s) => (s + 1) % total);
+
+  const selectCard = (i: number) => {
+    setActive(i);
+    setSlide(0);
+  };
 
   return (
     <Section
@@ -727,56 +746,60 @@ function GazeboSection() {
         {/* Left: image carousel */}
         <div className="rounded-3xl border border-resin-800 bg-[color:var(--color-surface)] p-4 sm:p-5">
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-resin-800">
-            <Placeholder label={GAZEBO_SLIDES[slide]} className="absolute inset-0" />
-            <button
-              type="button"
-              aria-label="Предыдущее фото"
-              onClick={prev}
-              className="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
-                <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              aria-label="Следующее фото"
-              onClick={next}
-              className="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
-                <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+            {currentImages[safeSlide] ? (
+              <img
+                src={currentImages[safeSlide]}
+                alt={GAZEBO_CARDS[active].title}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            ) : (
+              <Placeholder label={GAZEBO_CARDS[active].title} className="absolute inset-0" />
+            )}
+            {total > 1 && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Предыдущее фото"
+                  onClick={prev}
+                  className="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                    <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Следующее фото"
+                  onClick={next}
+                  className="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </>
+            )}
             <span className="absolute bottom-4 right-4 rounded-full border border-resin-200/15 bg-resin-950/70 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-100 backdrop-blur">
-              {slide + 1} / {total}
+              {safeSlide + 1} / {total}
             </span>
           </div>
-          <div className="mt-4 grid grid-cols-4 gap-3">
-            {GAZEBO_SLIDES.map((label, i) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => setSlide(i)}
-                aria-label={`Открыть фото ${i + 1}`}
-                className={`relative aspect-[4/3] overflow-hidden rounded-xl border transition-colors ${
-                  slide === i ? "border-teal" : "border-resin-800 hover:border-resin-400"
-                }`}
-              >
-                <Placeholder label={label} className="absolute inset-0" />
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 flex justify-center gap-2">
-            {GAZEBO_SLIDES.map((_, i) => (
-              <span
-                key={i}
-                className={`h-1.5 rounded-full transition-all ${
-                  slide === i ? "w-6 bg-teal" : "w-1.5 bg-resin-800"
-                }`}
-              />
-            ))}
-          </div>
+          {currentImages.length > 1 && (
+            <div className="mt-4 grid grid-cols-4 gap-3">
+              {currentImages.slice(0, 4).map((src, i) => (
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setSlide(i)}
+                  aria-label={`Открыть фото ${i + 1}`}
+                  className={`relative aspect-[4/3] overflow-hidden rounded-xl border transition-colors ${
+                    safeSlide === i ? "border-teal" : "border-resin-800 hover:border-resin-400"
+                  }`}
+                >
+                  <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right: cards */}
@@ -788,7 +811,7 @@ function GazeboSection() {
                 <button
                   key={c.title}
                   type="button"
-                  onClick={() => setActive(i)}
+                  onClick={() => selectCard(i)}
                   className={`group relative flex flex-col items-start gap-3 rounded-2xl border p-5 text-left transition-colors ${
                     isActive
                       ? "border-teal bg-teal/5"
@@ -843,65 +866,26 @@ type ServiceCategory = "banya" | "summer" | "winter" | "activities";
 type ServiceItem = {
   title: string;
   body: string;
-  image: string;
+  slug: string;
   categories: ServiceCategory[];
 };
 
 const serviceItems: ServiceItem[] = [
-  {
-    title: "Русская баня",
-    body: "Парилка на дровах, комната отдыха, душевая, санузел. Вместимость до 10 человек.",
-    image: "Фото · русская баня",
-    categories: ["banya"],
-  },
-  {
-    title: "Фурако",
-    body: "Кедровая купель с подогревом на дровах. Подходит для отдыха 4–6 человек.",
-    image: "Фото · фурако",
-    categories: ["banya"],
-  },
-  {
-    title: "Гидроциклы",
-    body: "Прогулки по воде с инструктором или самостоятельное катание в сезон.",
-    image: "Фото · гидроциклы",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "SUP-доска",
-    body: "Спокойные прогулки по воде и красивые виды в тёплое время года.",
-    image: "Фото · SUP",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "Катамаран",
-    body: "Неспешный отдых на воде для пары, семьи или небольшой компании.",
-    image: "Фото · катамаран",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "Квадроциклы",
-    body: "Маршруты по лесу и активный отдых на природе в сопровождении инструктора.",
-    image: "Фото · квадроциклы",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "Снегоходы",
-    body: "Маршруты по тундре и лесу с инструктором в устойчивый снежный сезон.",
-    image: "Фото · снегоход",
-    categories: ["winter", "activities"],
-  },
-  {
-    title: "Беговые лыжи",
-    body: "Прокат снаряжения и подготовленная лыжня рядом с базой.",
-    image: "Фото · лыжи",
-    categories: ["winter", "activities"],
-  },
-  {
-    title: "Северное сияние",
-    body: "Выезд к тёмным точкам наблюдения полярной ночью в сопровождении гида.",
-    image: "Фото · сияние",
-    categories: ["winter", "activities"],
-  },
+  { title: "Русская баня", body: "Парилка на дровах, комната отдыха, душевая, санузел. Вместимость до 10 человек.", slug: "banya", categories: ["banya"] },
+  { title: "Фурако", body: "Кедровая купель с подогревом на дровах. Подходит для отдыха 4–6 человек.", slug: "furako", categories: ["banya"] },
+  { title: "Веник (дуб / берёза)", body: "Свежие банные веники к парной — дубовый или берёзовый на выбор.", slug: "venik", categories: ["banya"] },
+  { title: "Гигиенический набор", body: "Одноразовый набор для гостей бани и коттеджа.", slug: "hygiene", categories: ["banya"] },
+  { title: "Гидроциклы", body: "Прогулки по воде с инструктором или самостоятельное катание в сезон.", slug: "jetski", categories: ["summer", "activities"] },
+  { title: "SUP-доска", body: "Спокойные прогулки по воде и красивые виды в тёплое время года.", slug: "sup", categories: ["summer", "activities"] },
+  { title: "Катамаран", body: "Неспешный отдых на воде для пары, семьи или небольшой компании.", slug: "catamaran", categories: ["summer", "activities"] },
+  { title: "Квадроциклы", body: "Маршруты по лесу и активный отдых на природе в сопровождении инструктора.", slug: "atv", categories: ["summer", "activities"] },
+  { title: "Детские квадроциклы", body: "Безопасные модели для юных гостей — катание по площадке.", slug: "atv-kids", categories: ["summer", "activities"] },
+  { title: "Бадминтон", body: "Ракетки и воланы — активный отдых на свежем воздухе для всей компании.", slug: "badminton", categories: ["summer", "activities"] },
+  { title: "Снегоходы", body: "Маршруты по тундре и лесу с инструктором в устойчивый снежный сезон.", slug: "snowmobile", categories: ["winter", "activities"] },
+  { title: "Беговые лыжи", body: "Прокат снаряжения и подготовленная лыжня рядом с базой.", slug: "ski", categories: ["winter", "activities"] },
+  { title: "Ватрушки", body: "Тюбинг с горки — простое и весёлое зимнее развлечение.", slug: "tubing", categories: ["winter", "activities"] },
+  { title: "Снежный банан", body: "Катание с ветерком за снегоходом — азарт для компании.", slug: "banana", categories: ["winter", "activities"] },
+  { title: "Тимбилдинг", body: "Программы активностей и командных игр под открытым небом.", slug: "teambuilding", categories: ["activities"] },
 ];
 
 function ActivitiesSection() {
@@ -938,9 +922,13 @@ function ActivitiesSection() {
             className="group flex flex-col overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] transition-colors hover:border-teal/40"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-resin-900 to-[#0a1514]">
-              <div className="absolute inset-0 grid place-items-center text-center text-xs font-mono uppercase tracking-widest text-resin-200/40">
-                {item.image}
-              </div>
+              {pics(item.slug)[0] ? (
+                <img src={pics(item.slug)[0]} alt={item.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              ) : (
+                <div className="absolute inset-0 grid place-items-center text-center text-xs font-mono uppercase tracking-widest text-resin-200/40">
+                  {item.title}
+                </div>
+              )}
             </div>
             <div className="flex flex-1 flex-col p-5">
               <h3 className="mb-2 text-base font-semibold text-resin-50">{item.title}</h3>
@@ -982,12 +970,7 @@ function ActivitiesSection() {
 
 /* ---------- Transfer ---------- */
 
-const TRANSFER_GALLERY = [
-  "Citroen SpaceTourer — вид сбоку",
-  "Салон микроавтобуса",
-  "Багажное отделение",
-  "Микроавтобус у базы",
-];
+const TRANSFER_GALLERY = pics("transfer");
 
 const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string?]> }> = [
   {
@@ -1072,38 +1055,48 @@ function TransferSection() {
         <div>
           <div className="relative overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)]">
             <div className="relative aspect-[16/10]">
-              <Placeholder label={TRANSFER_GALLERY[slide]} className="absolute inset-0" />
+              {TRANSFER_GALLERY[slide] ? (
+                <img src={TRANSFER_GALLERY[slide]} alt={`Трансфер · фото ${slide + 1}`} className="absolute inset-0 h-full w-full object-cover" />
+              ) : (
+                <Placeholder label="Микроавтобус" className="absolute inset-0" />
+              )}
             </div>
-            <button
-              type="button"
-              onClick={() => setSlide((s) => (s - 1 + total) % total)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
-              aria-label="Предыдущее фото"
-            >‹</button>
-            <button
-              type="button"
-              onClick={() => setSlide((s) => (s + 1) % total)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
-              aria-label="Следующее фото"
-            >›</button>
+            {total > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSlide((s) => (s - 1 + total) % total)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
+                  aria-label="Предыдущее фото"
+                >‹</button>
+                <button
+                  type="button"
+                  onClick={() => setSlide((s) => (s + 1) % total)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
+                  aria-label="Следующее фото"
+                >›</button>
+              </>
+            )}
             <span className="absolute bottom-3 right-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200/80">
-              {slide + 1}/{total}
+              {slide + 1}/{Math.max(total, 1)}
             </span>
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-3">
-            {TRANSFER_GALLERY.map((label, i) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => setSlide(i)}
-                className={`relative aspect-[16/10] overflow-hidden rounded-lg border transition-colors ${
-                  i === slide ? "border-teal" : "border-resin-800 hover:border-teal/60"
-                }`}
-              >
-                <Placeholder label={`${i + 1}`} className="absolute inset-0" />
-              </button>
-            ))}
-          </div>
+          {TRANSFER_GALLERY.length > 1 && (
+            <div className="mt-3 grid grid-cols-3 gap-3">
+              {TRANSFER_GALLERY.map((src, i) => (
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setSlide(i)}
+                  className={`relative aspect-[16/10] overflow-hidden rounded-lg border transition-colors ${
+                    i === slide ? "border-teal" : "border-resin-800 hover:border-teal/60"
+                  }`}
+                >
+                  <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Info */}
