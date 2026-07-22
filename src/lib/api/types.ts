@@ -1,6 +1,4 @@
 // Domain types shared between mock API and real REST backend.
-// Keep this file free of runtime imports so it can be reused server-side.
-
 export type ID = string;
 
 export interface AuthUser {
@@ -56,7 +54,7 @@ export interface Service {
 
 export interface PriceRow {
   id: ID;
-  section: string; // e.g. "transfer", "extras"
+  section: string;
   label: string;
   amount: number;
   unit?: string;
@@ -80,6 +78,20 @@ export interface SiteSettings {
   heroTitle: string;
   heroDescription: string;
   bookingNote: string;
+}
+
+export interface Booking {
+  id: ID;
+  createdAt: string;
+  name: string;
+  phone: string;
+  subject: string;
+  dates?: string;
+  guests?: number;
+  comment?: string;
+  status: "new" | "processed";
+  sortOrder: number;
+  published?: boolean;
 }
 
 export interface ListParams {
