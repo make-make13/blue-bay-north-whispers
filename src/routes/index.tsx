@@ -471,7 +471,7 @@ function StayCard({ stay }: { stay: Stay }) {
             {stay.kind === "cottage" ? "Коттедж" : "Таунхаус"}
           </span>
           <span className="absolute right-3 top-3 rounded-full bg-teal px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-resin-950">
-            {formatPrice(stay.price)}<span className="opacity-70"> / сут</span>
+            {formatPrice(stay.price)}<span className="opacity-70"> {stay.priceUnit ?? "/ сут"}</span>
           </span>
         </div>
 
