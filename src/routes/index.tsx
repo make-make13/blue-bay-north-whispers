@@ -661,22 +661,16 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
 
 /* ---------- Gazebos ---------- */
 
-const GAZEBO_SLIDES = [
-  "Беседка · внешний вид",
-  "Беседка · внутри, стол и лавки",
-  "Беседка · мангал",
-  "Беседка · вечер у огня",
-];
-
 const GAZEBO_CARDS: {
   title: string;
   body: string;
   icon: "house" | "house2" | "crown" | "people";
+  slug: string;
 }[] = [
-  { title: "Беседка №1*", body: "Закреплена за Коттеджем №1.", icon: "house" },
-  { title: "Беседка №2*", body: "Закреплена за Коттеджем №2.", icon: "house2" },
-  { title: "Беседка VIP*", body: "Закреплена за VIP-блоком №3.", icon: "crown" },
-  { title: "Общая беседка", body: "Доступна по предварительному запросу.", icon: "people" },
+  { title: "Беседка №1*", body: "Закреплена за Коттеджем №1.", icon: "house", slug: "gazebo-1" },
+  { title: "Беседка №2*", body: "Закреплена за Коттеджем №2.", icon: "house2", slug: "gazebo-2" },
+  { title: "Беседка VIP*", body: "Закреплена за VIP-блоком №3.", icon: "crown", slug: "gazebo-vip" },
+  { title: "Общая беседка", body: "Доступна по предварительному запросу.", icon: "people", slug: "gazebo-3" },
 ];
 
 function DetailIcon({ kind }: { kind: "beds" | "bath" | "kitchen" | "media" | "outdoor" }) {
