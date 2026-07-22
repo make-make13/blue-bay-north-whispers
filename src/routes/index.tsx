@@ -215,7 +215,6 @@ function Index() {
         <ActivitiesSection />
         <TransferSection />
         <TrustSection />
-        <StepsSection />
         <RequestSection />
       </main>
       <SiteFooter />
@@ -941,86 +940,87 @@ function TrustSection() {
 
 /* ---------- Steps ---------- */
 
-function StepsSection() {
-  const steps = [
-    ["Заявка", "Оставляете заявку через форму или по телефону."],
-    ["Согласование", "Менеджер уточняет даты, объект и услуги."],
-    ["Предоплата", "Фиксируем бронь по подтверждённой заявке."],
-    ["Приезд", "Встречаем на базе, при необходимости — трансфер."],
-  ];
-  return (
-    <Section id="steps" eyebrow="Как забронировать" title="Четыре простых шага"
-      lede="Форма на сайте — это заявка, а не подтверждение брони. Дата закрепляется после ответа менеджера и предоплаты.">
-      <ol className="grid gap-4 md:grid-cols-4">
-        {steps.map(([title, body], i) => (
-          <li key={title} className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
-            <div className="mb-4 grid h-9 w-9 place-items-center rounded-full bg-teal/15 font-mono text-sm font-semibold text-teal">
-              {i + 1}
-            </div>
-            <p className="mb-1.5 text-base font-medium text-resin-50">{title}</p>
-            <p className="text-sm text-resin-200/70">{body}</p>
-          </li>
-        ))}
-      </ol>
-    </Section>
-  );
-}
+/* ---------- Request (with steps) ---------- */
 
-/* ---------- Request ---------- */
+const BOOKING_STEPS: Array<[string, string]> = [
+  ["Заявка", "Через форму или по телефону."],
+  ["Согласование", "Уточняем даты, объект и услуги."],
+  ["Предоплата", "Фиксируем бронь по подтверждённой заявке."],
+  ["Приезд", "Встречаем на базе, при необходимости — трансфер."],
+];
 
 function RequestSection() {
   return (
     <section id="request" className="border-t border-resin-800/60 bg-gradient-to-b from-resin-950 to-[#0a1110] py-20 md:py-28">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[1fr_1.1fr]">
-        <div>
+      <div className="mx-auto max-w-6xl px-6">
+        <header className="mb-12 max-w-3xl">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Бронирование</p>
           <h2 className="text-3xl font-semibold tracking-tight text-resin-50 md:text-5xl">
-            Забронируйте ваш отдых
+            Как забронировать
           </h2>
-          <p className="mt-4 max-w-md text-resin-200/70">
-            Заполните форму — менеджер свяжется с вами в течение рабочего дня. Отправка формы не является подтверждением брони.
+          <p className="mt-4 text-resin-200/70 md:text-lg">
+            Форма — это заявка, не подтверждение брони. Дата закрепляется после ответа менеджера и предоплаты.
           </p>
-          <div className="mt-8 space-y-3 text-sm text-resin-200/80">
-            <p><span className="text-resin-200/50">Тел.:</span> <a href="tel:+78152780111" className="text-resin-50 hover:text-teal">8 (8152) 780-111</a></p>
-            <p><span className="text-resin-200/50">Адрес:</span> Мурманская обл., Верхнетуломское шоссе, 36 км</p>
-            <p><span className="text-resin-200/50">Координаты:</span> 68.85° N, 32.78° E</p>
-          </div>
-        </div>
+        </header>
 
-        <form
-          className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-8"
-          onSubmit={(e) => {
-            e.preventDefault();
-            alert("Заявка отправлена. Менеджер свяжется с вами.");
-          }}
-        >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Имя" name="name" placeholder="Как к вам обращаться" required />
-            <Field label="Телефон" name="phone" type="tel" placeholder="+7" required />
-            <Field label="Дата заезда" name="checkin" type="date" />
-            <Field label="Дата выезда" name="checkout" type="date" />
-            <Field label="Гостей" name="guests" type="number" placeholder="2" />
-            <Field label="Объект" name="stay" placeholder="Например: Коттедж №1" />
+        <div className="grid gap-10 md:grid-cols-[1fr_1.1fr]">
+          <div className="flex flex-col">
+            <ol className="space-y-4">
+              {BOOKING_STEPS.map(([title, body], i) => (
+                <li key={title} className="flex gap-4 rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5">
+                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-teal/15 font-mono text-sm font-semibold text-teal">
+                    {i + 1}
+                  </div>
+                  <div>
+                    <p className="mb-1 text-base font-medium text-resin-50">{title}</p>
+                    <p className="text-sm text-resin-200/70">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+
+            <div className="mt-8 space-y-2 border-t border-resin-800/60 pt-6 text-sm text-resin-200/80">
+              <p><span className="text-resin-200/50">Тел.:</span> <a href="tel:+78152780111" className="text-resin-50 hover:text-teal">8 (8152) 780-111</a></p>
+              <p><span className="text-resin-200/50">Адрес:</span> Верхнетуломское шоссе, 36 км</p>
+              <p><span className="text-resin-200/50">Координаты:</span> 68.85° N, 32.78° E</p>
+            </div>
           </div>
-          <label className="mt-4 block">
-            <span className="mb-1.5 block text-xs uppercase tracking-widest text-resin-200/50">Комментарий</span>
-            <textarea
-              name="note"
-              rows={3}
-              placeholder="Пожелания, услуги, трансфер"
-              className="w-full rounded-lg border border-resin-800 bg-resin-950 px-4 py-3 text-sm text-resin-50 outline-none placeholder:text-resin-200/30 focus:border-teal"
-            />
-          </label>
-          <p className="mt-4 text-xs text-resin-200/45">
-            Нажимая кнопку, вы соглашаетесь на обработку персональных данных в соответствии с 152-ФЗ. Отправка формы — это заявка, не подтверждение брони.
-          </p>
-          <button
-            type="submit"
-            className="mt-5 w-full rounded-full bg-teal py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
+
+          <form
+            className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-8"
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Заявка отправлена. Менеджер свяжется с вами.");
+            }}
           >
-            Отправить заявку
-          </button>
-        </form>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Имя" name="name" placeholder="Как к вам обращаться" required />
+              <Field label="Телефон" name="phone" type="tel" placeholder="+7" required />
+              <Field label="Дата заезда" name="checkin" type="date" />
+              <Field label="Дата выезда" name="checkout" type="date" />
+              <Field label="Гостей" name="guests" type="number" placeholder="2" />
+              <Field label="Объект" name="stay" placeholder="Например: Коттедж №1" />
+            </div>
+            <label className="mt-4 block">
+              <span className="mb-1.5 block text-xs uppercase tracking-widest text-resin-200/50">Комментарий</span>
+              <textarea
+                name="note"
+                rows={3}
+                placeholder="Пожелания, услуги, трансфер"
+                className="w-full rounded-lg border border-resin-800 bg-resin-950 px-4 py-3 text-sm text-resin-50 outline-none placeholder:text-resin-200/30 focus:border-teal"
+              />
+            </label>
+            <p className="mt-4 text-xs text-resin-200/45">
+              Нажимая кнопку, вы соглашаетесь на обработку персональных данных в соответствии с 152-ФЗ.
+            </p>
+            <button
+              type="submit"
+              className="mt-5 w-full rounded-full bg-teal py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
+            >
+              Отправить заявку
+            </button>
+          </form>
+        </div>
       </div>
     </section>
   );
