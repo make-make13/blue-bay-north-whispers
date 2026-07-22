@@ -616,23 +616,31 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
           {/* Right: gallery */}
           <div className="flex gap-3">
             <div className="relative flex-1 overflow-hidden rounded-2xl border border-resin-800">
-              <Placeholder label={slides[active]} className="absolute inset-0" />
+              {hasImages ? (
+                <img src={slides[active]} alt={`${stay.name} — фото ${active + 1}`} className="absolute inset-0 h-full w-full object-cover" />
+              ) : (
+                <Placeholder label={stay.name} className="absolute inset-0" />
+              )}
               <span className="absolute bottom-3 left-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200 backdrop-blur">
-                {active + 1} / {slides.length}
+                {Math.min(active + 1, Math.max(slides.length, 1))} / {Math.max(slides.length, 1)}
               </span>
             </div>
             <div className="flex w-20 flex-col gap-2 md:w-24">
-              {slides.slice(0, 5).map((label, i) => (
+              {(hasImages ? slides.slice(0, 5) : [0,1,2,3,4]).map((src, i) => (
                 <button
-                  key={label}
+                  key={i}
                   type="button"
                   onClick={() => setActive(i)}
                   className={`relative aspect-square overflow-hidden rounded-xl border transition-colors ${
                     active === i ? "border-teal ring-2 ring-teal/40" : "border-resin-800 hover:border-resin-200/40"
                   }`}
-                  aria-label={label}
+                  aria-label={`Фото ${i + 1}`}
                 >
-                  <Placeholder label="" className="absolute inset-0" />
+                  {hasImages ? (
+                    <img src={src as string} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                  ) : (
+                    <Placeholder label="" className="absolute inset-0" />
+                  )}
                 </button>
               ))}
               {slides.length > 5 && (
