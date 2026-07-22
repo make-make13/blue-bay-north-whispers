@@ -538,20 +538,21 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="relative my-auto w-full max-w-3xl overflow-hidden rounded-3xl border border-resin-800 bg-[color:var(--color-surface)]"
+        className="relative my-auto flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-resin-800 bg-[color:var(--color-surface)]"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-200 hover:border-teal hover:text-teal"
+          className="absolute right-4 top-4 z-20 grid h-9 w-9 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-200 hover:border-teal hover:text-teal"
           aria-label="Закрыть"
         >
           ✕
         </button>
 
         {/* Gallery */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden">
+        <div className="relative aspect-[16/8] w-full shrink-0 overflow-hidden">
+
           {hasImages ? (
             <img
               src={slides[active]}
