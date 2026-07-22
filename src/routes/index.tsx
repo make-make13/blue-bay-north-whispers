@@ -970,12 +970,7 @@ function ActivitiesSection() {
 
 /* ---------- Transfer ---------- */
 
-const TRANSFER_GALLERY = [
-  "Citroen SpaceTourer — вид сбоку",
-  "Салон микроавтобуса",
-  "Багажное отделение",
-  "Микроавтобус у базы",
-];
+const TRANSFER_GALLERY = pics("transfer");
 
 const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string?]> }> = [
   {
