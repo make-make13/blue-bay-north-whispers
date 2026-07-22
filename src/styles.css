@@ -63,6 +63,10 @@
   --color-resin-950: #0c1312;
   --color-amber-pine: #b45309;
   --color-ice: #7fb1c4;
+  --color-teal: #2dd4bf;
+  --color-teal-dim: #14b8a6;
+  --color-surface: #101a19;
+  --color-surface-2: #16211f;
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
