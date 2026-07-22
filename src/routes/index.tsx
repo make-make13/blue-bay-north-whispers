@@ -669,6 +669,24 @@ function ActivitiesSection() {
           </article>
         ))}
       </div>
+
+      <div className="mt-14">
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <h3 className="text-lg font-semibold text-resin-50">Дополнительно на месте</h3>
+          <p className="text-xs text-resin-200/60">Уточняйте наличие при заезде</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {extrasRows.map(([label, price]) => (
+            <div
+              key={label}
+              className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5"
+            >
+              <p className="text-sm text-resin-200/80">{label}</p>
+              <p className="mt-3 font-mono text-lg font-semibold tabular-nums text-teal">{price}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </Section>
   );
 }
