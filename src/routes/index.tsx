@@ -445,14 +445,16 @@ function StaysSection() {
 
 function StayCard({ stay }: { stay: Stay }) {
   const [open, setOpen] = useState(false);
+  const cover = pics(stay.slug)[0];
   return (
     <>
       <article className="group flex flex-col overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] transition-colors hover:border-teal/50">
         <div className="relative aspect-[4/3] overflow-hidden">
-          <Placeholder
-            label={stay.kind === "cottage" ? "Фото · коттедж" : "Фото · блок таунхауса"}
-            className="absolute inset-0"
-          />
+          {cover ? (
+            <img src={cover} alt={stay.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          ) : (
+            <Placeholder label={stay.kind === "cottage" ? "Фото · коттедж" : "Фото · блок таунхауса"} className="absolute inset-0" />
+          )}
           <span className="absolute left-3 top-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-resin-200 backdrop-blur">
             {stay.kind === "cottage" ? "Коттедж" : "Таунхаус"}
           </span>
