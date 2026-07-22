@@ -1,27 +1,19 @@
-// Public API surface for the admin panel and (later) the public site.
-// Switches automatically between the mock implementation and the real REST
-// client based on whether VITE_API_URL is defined at build time.
-//
-// Endpoint contract for the future backend (PHP+MySQL or Node+Postgres):
+// Public API surface. Switches automatically between mock and REST backend
+// based on VITE_API_URL. Endpoint contract:
 //   POST   /auth/login              -> { token, user }
 //   GET    /auth/me                 -> user
 //   POST   /auth/logout             -> 204
-//   GET    /cottages               ?category=&published=
-//   POST   /cottages                (body: Cottage without id)
-//   GET    /cottages/:id
-//   PATCH  /cottages/:id
-//   DELETE /cottages/:id
-//   POST   /cottages/reorder        (body: { ids: string[] })
-//   ... same shape for /services, /prices, /gallery
-//   GET    /settings
-//   PATCH  /settings
-//   POST   /uploads (multipart)     -> { url }
-//   DELETE /uploads                 (body: { url })
+//   GET    /cottages | POST | GET :id | PATCH :id | DELETE :id | POST /reorder
+//   (same shape for /services, /prices, /gallery, /bookings)
+//   GET    /settings                 | PATCH /settings
+//   POST   /uploads (multipart)      -> { url }
+//   DELETE /uploads                  (body: { url })
 
 import { request } from "./client";
 import * as mock from "./mock";
 import type {
   AuthSession,
+  Booking,
   Cottage,
   GalleryImage,
   ListParams,
@@ -78,6 +70,7 @@ export const api = {
   services: crud<Service>("/services", mock.mockServices),
   prices: crud<PriceRow>("/prices", mock.mockPrices),
   gallery: crud<GalleryImage>("/gallery", mock.mockGallery),
+  bookings: crud<Booking>("/bookings", mock.mockBookings),
   settings: {
     get: (): Promise<SiteSettings> =>
       USE_MOCK ? mock.mockSettings.get() : request<SiteSettings>("/settings"),

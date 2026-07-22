@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 import { AdminShell } from "../components/admin/AdminShell";
-import { ResourceEditor } from "../components/admin/ResourceEditor";
-import { Field, TextInput } from "../components/admin/ui";
-import { ImageListEditor } from "../components/admin/ImageListEditor";
+import { PhotoUploader } from "../components/admin/PhotoUploader";
+import { Card, SectionBlock } from "../components/admin/ui";
+import { ConfirmDialog } from "../components/admin/ConfirmDialog";
 import { api } from "../lib/api";
 import type { GalleryImage } from "../lib/api/types";
 
@@ -11,59 +14,102 @@ export const Route = createFileRoute("/admin/gallery")({
   component: GalleryAdmin,
 });
 
-const empty: Omit<GalleryImage, "id"> = {
-  url: "",
-  alt: "",
-  category: "general",
-  sortOrder: 0,
-};
-
 function GalleryAdmin() {
+  const [items, setItems] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [confirmDelete, setConfirmDelete] = useState<GalleryImage | null>(null);
+
+  async function refresh() {
+    setLoading(true);
+    try {
+      setItems(await api.gallery.list());
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  async function onAdd(urls: string[]) {
+    // Uploader gives back an updated list — treat additions as new items.
+    const known = new Set(items.map((i) => i.url));
+    const added = urls.filter((u) => !known.has(u));
+    for (const url of added) {
+      await api.gallery.create({
+        url,
+        alt: "",
+        category: "general",
+        sortOrder: items.length + 1,
+      });
+    }
+    if (added.length) toast.success("Фотография добавлена");
+    refresh();
+  }
+
   return (
-    <AdminShell title="Галерея">
-      <ResourceEditor<GalleryImage>
-        crud={api.gallery as any}
-        empty={empty}
-        supportsPublish={false}
-        addLabel="Добавить фото"
-        renderRow={(item) => (
-          <div className="flex items-center gap-3">
-            {item.url ? (
-              <img src={item.url} alt="" className="h-12 w-16 rounded object-cover" />
-            ) : (
-              <div className="flex h-12 w-16 items-center justify-center rounded bg-neutral-800 text-xs text-neutral-500">
-                нет
-              </div>
-            )}
-            <div>
-              <div className="text-sm text-white">{item.alt || "(без описания)"}</div>
-              <div className="text-xs text-neutral-500">{item.category}</div>
-            </div>
+    <AdminShell title="Фотографии" subtitle="Фотографии">
+      <div className="mb-6">
+        <h2 className="text-3xl font-semibold text-slate-900">Фотографии</h2>
+        <p className="mt-1 text-base text-slate-600">
+          Общая галерея сайта. Для фотографий конкретного коттеджа или услуги —
+          откройте нужный объект и добавьте фотографии там.
+        </p>
+      </div>
+
+      <SectionBlock
+        title="Загрузить новые фотографии"
+        description="Перетащите файлы в область ниже или нажмите «Выбрать фотографии»."
+      >
+        <PhotoUploader
+          value={items.map((i) => i.url)}
+          onChange={onAdd}
+        />
+      </SectionBlock>
+
+      {loading ? null : items.length > 0 && (
+        <Card className="mt-6 p-6">
+          <div className="mb-4 text-lg font-semibold text-slate-900">
+            В галерее сейчас — {items.length}
           </div>
-        )}
-        renderForm={({ value, setValue }) => {
-          const v = value as GalleryImage;
-          const set = (patch: Partial<GalleryImage>) => setValue({ ...v, ...patch });
-          return (
-            <>
-              <Field label="Категория" hint="например: cottage-1, banya, transfer">
-                <TextInput
-                  value={v.category}
-                  onChange={(e) => set({ category: e.target.value })}
-                />
-              </Field>
-              <Field label="Alt-текст">
-                <TextInput value={v.alt ?? ""} onChange={(e) => set({ alt: e.target.value })} />
-              </Field>
-              <Field label="Файл">
-                <ImageListEditor
-                  value={v.url ? [v.url] : []}
-                  onChange={(urls) => set({ url: urls[0] ?? "" })}
-                />
-              </Field>
-            </>
-          );
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {items.map((img) => (
+              <div
+                key={img.id}
+                className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white"
+              >
+                <img src={img.url} alt={img.alt ?? ""} className="aspect-[4/3] w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(img)}
+                  className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-lg bg-white/95 px-2 py-1 text-xs font-medium text-red-600 opacity-0 shadow transition group-hover:opacity-100 hover:bg-white"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Удалить
+                </button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      <ConfirmDialog
+        open={!!confirmDelete}
+        title="Удалить фотографию?"
+        description="Она перестанет отображаться на сайте. Это действие нельзя отменить."
+        onConfirm={async () => {
+          if (!confirmDelete) return;
+          try {
+            await api.gallery.remove(confirmDelete.id);
+            toast.success("Фотография удалена");
+          } catch {
+            toast.error("Не удалось удалить. Попробуйте ещё раз");
+          } finally {
+            setConfirmDelete(null);
+            refresh();
+          }
         }}
+        onCancel={() => setConfirmDelete(null)}
       />
     </AdminShell>
   );

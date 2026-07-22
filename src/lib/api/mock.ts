@@ -1,9 +1,7 @@
-// Mock API backed by localStorage. Used while VITE_API_URL is not set so
-// admin flows can be developed without a backend. Shape mirrors the future
-// REST endpoints defined in src/lib/api/index.ts.
-
+// Mock API backed by localStorage. Mirrors REST endpoints in src/lib/api/index.ts.
 import type {
   AuthSession,
+  Booking,
   Cottage,
   GalleryImage,
   ListParams,
@@ -13,7 +11,7 @@ import type {
   SiteSettings,
 } from "./types";
 
-const DB_KEY = "gb.admin.mockdb.v1";
+const DB_KEY = "gb.admin.mockdb.v2";
 const DEMO_EMAIL = "admin@golubaya-buhta.ru";
 const DEMO_PASSWORD = "admin123";
 
@@ -22,6 +20,7 @@ interface DB {
   services: Service[];
   prices: PriceRow[];
   gallery: GalleryImage[];
+  bookings: Booking[];
   settings: SiteSettings;
 }
 
@@ -47,6 +46,24 @@ function seed(): DB {
         hasGrill: true,
         images: [],
         included: ["Сауна", "Камин", "Мангальная зона", "Кухня"],
+        published: true,
+        sortOrder: 1,
+      },
+      {
+        id: uid(),
+        slug: "townhouse-3-1",
+        title: "Таунхаус №3, блок 1",
+        kind: "townhouse",
+        tagline: "Уютный блок таунхауса",
+        description: "Комфортный блок в общем корпусе с сауной.",
+        price: 19000,
+        priceUnit: "/ блок / сутки",
+        capacity: 4,
+        bedrooms: 2,
+        hasSauna: true,
+        hasGrill: false,
+        images: [],
+        included: ["Сауна", "Кухня", "Мангальная зона на территории"],
         published: true,
         sortOrder: 1,
       },
@@ -77,6 +94,7 @@ function seed(): DB {
       },
     ],
     gallery: [],
+    bookings: [],
     settings: {
       siteName: "Голубая Бухта",
       phone: "+7 (900) 000-00-00",
@@ -99,7 +117,9 @@ function load(): DB {
     return s;
   }
   try {
-    return JSON.parse(raw) as DB;
+    const parsed = JSON.parse(raw) as DB;
+    if (!parsed.bookings) parsed.bookings = [];
+    return parsed;
   } catch {
     const s = seed();
     window.localStorage.setItem(DB_KEY, JSON.stringify(s));
@@ -120,7 +140,6 @@ function sortByOrder<T extends { sortOrder: number }>(arr: T[]): T[] {
   return [...arr].sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-// ---- Auth ----
 export const mockAuth = {
   async login(payload: LoginPayload): Promise<AuthSession> {
     if (payload.email !== DEMO_EMAIL || payload.password !== DEMO_PASSWORD) {
@@ -149,8 +168,6 @@ export const mockAuth = {
   },
 };
 
-// Generic CRUD factory. Uses `any` internally to keep the mock small; the
-// public typed surface lives in src/lib/api/index.ts.
 function makeCrud<K extends keyof DB>(key: K) {
   type T = any;
   const read = (): T[] => load()[key] as unknown as T[];
@@ -200,8 +217,8 @@ export const mockCottages = makeCrud("cottages");
 export const mockServices = makeCrud("services");
 export const mockPrices = makeCrud("prices");
 export const mockGallery = makeCrud("gallery");
+export const mockBookings = makeCrud("bookings");
 
-// ---- Settings ----
 export const mockSettings = {
   async get(): Promise<SiteSettings> {
     return delay(load().settings);
@@ -214,8 +231,6 @@ export const mockSettings = {
   },
 };
 
-// ---- Uploads ----
-// Real backend returns { url }. In mock we store as data URLs.
 export const mockUploads = {
   async upload(file: File): Promise<{ url: string }> {
     const url = await new Promise<string>((resolve, reject) => {

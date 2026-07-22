@@ -12,12 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminTextsRouteImport } from './routes/admin.texts'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminServicesRouteImport } from './routes/admin.services'
+import { Route as AdminRoomsRouteImport } from './routes/admin.rooms'
 import { Route as AdminPricesRouteImport } from './routes/admin.prices'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminCottagesRouteImport } from './routes/admin.cottages'
+import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -34,6 +37,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTextsRoute = AdminTextsRouteImport.update({
+  id: '/texts',
+  path: '/texts',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -42,6 +50,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
 const AdminServicesRoute = AdminServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRoomsRoute = AdminRoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPricesRoute = AdminPricesRouteImport.update({
@@ -64,38 +77,52 @@ const AdminCottagesRoute = AdminCottagesRouteImport.update({
   path: '/cottages',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/cottages': typeof AdminCottagesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/prices': typeof AdminPricesRoute
+  '/admin/rooms': typeof AdminRoomsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/texts': typeof AdminTextsRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/cottages': typeof AdminCottagesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/prices': typeof AdminPricesRoute
+  '/admin/rooms': typeof AdminRoomsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/texts': typeof AdminTextsRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/cottages': typeof AdminCottagesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/prices': typeof AdminPricesRoute
+  '/admin/rooms': typeof AdminRoomsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/texts': typeof AdminTextsRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -103,33 +130,42 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/admin/bookings'
     | '/admin/cottages'
     | '/admin/gallery'
     | '/admin/login'
     | '/admin/prices'
+    | '/admin/rooms'
     | '/admin/services'
     | '/admin/settings'
+    | '/admin/texts'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/bookings'
     | '/admin/cottages'
     | '/admin/gallery'
     | '/admin/login'
     | '/admin/prices'
+    | '/admin/rooms'
     | '/admin/services'
     | '/admin/settings'
+    | '/admin/texts'
     | '/admin'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/admin/bookings'
     | '/admin/cottages'
     | '/admin/gallery'
     | '/admin/login'
     | '/admin/prices'
+    | '/admin/rooms'
     | '/admin/services'
     | '/admin/settings'
+    | '/admin/texts'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -161,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/texts': {
+      id: '/admin/texts'
+      path: '/texts'
+      fullPath: '/admin/texts'
+      preLoaderRoute: typeof AdminTextsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -173,6 +216,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/admin/services'
       preLoaderRoute: typeof AdminServicesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/rooms': {
+      id: '/admin/rooms'
+      path: '/rooms'
+      fullPath: '/admin/rooms'
+      preLoaderRoute: typeof AdminRoomsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/prices': {
@@ -203,26 +253,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCottagesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminBookingsRoute: typeof AdminBookingsRoute
   AdminCottagesRoute: typeof AdminCottagesRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPricesRoute: typeof AdminPricesRoute
+  AdminRoomsRoute: typeof AdminRoomsRoute
   AdminServicesRoute: typeof AdminServicesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTextsRoute: typeof AdminTextsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBookingsRoute: AdminBookingsRoute,
   AdminCottagesRoute: AdminCottagesRoute,
   AdminGalleryRoute: AdminGalleryRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPricesRoute: AdminPricesRoute,
+  AdminRoomsRoute: AdminRoomsRoute,
   AdminServicesRoute: AdminServicesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminTextsRoute: AdminTextsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -235,13 +298,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
