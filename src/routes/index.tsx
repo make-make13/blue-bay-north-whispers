@@ -1107,11 +1107,12 @@ function ActivitiesSection() {
           {extrasRows.map(([label, price]) => (
             <div
               key={label}
-              className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5"
+              className="flex items-center justify-between gap-4 rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5"
             >
               <p className="text-sm text-resin-200/80">{label}</p>
-              <p className="mt-3 font-mono text-lg font-semibold tabular-nums text-teal">{price}</p>
+              <p className="font-mono text-lg font-semibold tabular-nums text-teal whitespace-nowrap">{price}</p>
             </div>
+
           ))}
         </div>
       </div>
