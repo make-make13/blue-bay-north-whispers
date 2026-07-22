@@ -676,37 +676,221 @@ function ActivitiesSection() {
 
 /* ---------- Transfer ---------- */
 
+const TRANSFER_GALLERY = [
+  "Citroen SpaceTourer — вид сбоку",
+  "Салон микроавтобуса",
+  "Багажное отделение",
+  "Микроавтобус у базы",
+];
+
+const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string?]> }> = [
+  {
+    title: "До Голубой Бухты",
+    routes: [
+      ["Первомайский район → Голубая Бухта"],
+      ["Октябрьский район → Голубая Бухта"],
+      ["Ленинский район → Голубая Бухта"],
+      ["Кола → Голубая Бухта"],
+      ["Аэропорт → Голубая Бухта", "3 000 ₽"],
+    ],
+  },
+  {
+    title: "Из Голубой Бухты",
+    routes: [
+      ["Голубая Бухта → Кола"],
+      ["Голубая Бухта → Первомайский район"],
+      ["Голубая Бухта → Октябрьский район"],
+      ["Голубая Бухта → Ленинский район", "3 000 ₽"],
+      ["Голубая Бухта → Аэропорт", "3 000 ₽"],
+    ],
+  },
+  {
+    title: "Аэропорт и Мурманск",
+    routes: [
+      ["Первомайский район → Аэропорт"],
+      ["Октябрьский район → Аэропорт"],
+      ["Ленинский район → Аэропорт"],
+      ["Аэропорт → Мурманск"],
+    ],
+  },
+  {
+    title: "Териберка",
+    routes: [
+      ["Аэропорт → Териберка"],
+      ["Териберка → Аэропорт"],
+      ["Мурманск → Териберка"],
+      ["Териберка → Мурманск"],
+      ["Голубая Бухта → Териберка", "12 000 ₽ / 24 000 ₽ туда-обратно"],
+    ],
+  },
+];
+
+function TransferIcon({ kind }: { kind: "seats" | "luggage" | "comfort" }) {
+  const common = "h-4 w-4 text-teal";
+  if (kind === "seats") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={common}>
+        <circle cx="8" cy="7" r="2.5" /><circle cx="16" cy="7" r="2.5" />
+        <path d="M3 20c0-3 2.5-5 5-5s5 2 5 5" /><path d="M11 20c0-3 2.5-5 5-5s5 2 5 5" />
+      </svg>
+    );
+  }
+  if (kind === "luggage") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={common}>
+        <rect x="5" y="7" width="14" height="13" rx="2" /><path d="M9 7V4h6v3" /><path d="M9 11v6M15 11v6" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={common}>
+      <path d="M4 17V9l4-4h8l4 4v8" /><path d="M4 17h16" /><circle cx="8" cy="17" r="2" /><circle cx="16" cy="17" r="2" />
+    </svg>
+  );
+}
+
 function TransferSection() {
+  const [slide, setSlide] = useState(0);
+  const [routesOpen, setRoutesOpen] = useState(false);
+  const total = TRANSFER_GALLERY.length;
+
   return (
     <Section
       id="transfer"
       eyebrow="Логистика"
       title="Комфортный трансфер на микроавтобусе"
-      lede="Встречаем в аэропорту и на вокзале Мурманска, возим в город и Териберку. Все машины — с водителем."
+      lede="Citroen SpaceTourer на 7 мест. Встречаем в аэропорту и на вокзале Мурманска, возим в город и Териберку."
     >
-      <div className="grid gap-5 md:grid-cols-[1.4fr_1fr]">
-        <div className="overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)]">
-          <table className="w-full text-sm">
-            <tbody className="divide-y divide-resin-800">
-              {transferRows.map(([label, price]) => (
-                <tr key={label} className="hover:bg-resin-900/40">
-                  <td className="px-5 py-4 text-resin-200/85">{label}</td>
-                  <td className="px-5 py-4 text-right font-mono tabular-nums text-teal">{price}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="grid gap-6 md:grid-cols-[1.35fr_1fr]">
+        {/* Gallery */}
+        <div>
+          <div className="relative overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)]">
+            <div className="relative aspect-[16/10]">
+              <Placeholder label={TRANSFER_GALLERY[slide]} className="absolute inset-0" />
+            </div>
+            <button
+              type="button"
+              onClick={() => setSlide((s) => (s - 1 + total) % total)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
+              aria-label="Предыдущее фото"
+            >‹</button>
+            <button
+              type="button"
+              onClick={() => setSlide((s) => (s + 1) % total)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
+              aria-label="Следующее фото"
+            >›</button>
+            <span className="absolute bottom-3 right-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200/80">
+              {slide + 1}/{total}
+            </span>
+          </div>
+          <div className="mt-3 grid grid-cols-4 gap-3">
+            {TRANSFER_GALLERY.map((label, i) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setSlide(i)}
+                className={`relative aspect-[16/10] overflow-hidden rounded-lg border transition-colors ${
+                  i === slide ? "border-teal" : "border-resin-800 hover:border-teal/60"
+                }`}
+              >
+                <Placeholder label={`${i + 1}`} className="absolute inset-0" />
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 text-sm text-resin-200/75">
-          <p className="mb-3 font-medium text-resin-50">Как заказать</p>
-          <p className="mb-4">
-            Сообщите номер рейса или поезда при бронировании. Ориентировочное время в пути от аэропорта — 50–60 минут.
-          </p>
-          <p className="text-xs text-resin-200/50">
+
+        {/* Info */}
+        <div className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Автомобиль</p>
+          <p className="text-xl font-medium text-resin-50">Citroen SpaceTourer</p>
+          <p className="mt-1 text-sm text-resin-200/70">Микроавтобус на 7 мест с багажным отделением. Все поездки — с водителем.</p>
+
+          <div className="mt-6 grid grid-cols-1 gap-3 border-t border-resin-800 pt-6">
+            {[
+              ["seats" as const, "До 7 пассажиров"],
+              ["luggage" as const, "Место для багажа"],
+              ["comfort" as const, "Комфортный салон"],
+            ].map(([icon, text]) => (
+              <div key={text} className="flex items-center gap-3 text-sm text-resin-200/85">
+                <span className="grid h-9 w-9 place-items-center rounded-lg border border-resin-800 bg-resin-950/60">
+                  <TransferIcon kind={icon} />
+                </span>
+                {text}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setRoutesOpen(true)}
+              className="rounded-full border border-resin-700 px-5 py-2.5 text-sm text-resin-50 hover:border-teal hover:text-teal"
+            >
+              Маршрут и цены
+            </button>
+            <a
+              href="#request"
+              className="inline-flex items-center gap-2 rounded-full bg-teal px-5 py-2.5 text-sm font-medium text-resin-950 hover:bg-teal-dim"
+            >
+              Заказать →
+            </a>
+          </div>
+
+          <p className="mt-5 text-xs text-resin-200/50">
             Трансфер организуется по подтверждённой заявке. Стоимость указана за машину, до 7 гостей с багажом.
           </p>
         </div>
       </div>
+
+      {routesOpen && (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-resin-950/80 p-4 backdrop-blur-sm"
+          onClick={() => setRoutesOpen(false)}
+        >
+          <div
+            className="relative max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div>
+                <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Направления</p>
+                <h3 className="text-2xl font-semibold text-resin-50">Маршрут и цены</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRoutesOpen(false)}
+                className="grid h-9 w-9 place-items-center rounded-full border border-resin-800 text-resin-200 hover:border-teal hover:text-teal"
+                aria-label="Закрыть"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {ROUTE_GROUPS.map((group) => (
+                <div key={group.title}>
+                  <p className="mb-3 text-sm font-medium text-teal">{group.title}</p>
+                  <ul className="space-y-2 text-sm">
+                    {group.routes.map(([label, price]) => (
+                      <li key={label} className="flex items-baseline justify-between gap-3 border-b border-resin-800/60 py-2 text-resin-200/85">
+                        <span>{label}</span>
+                        <span className="shrink-0 font-mono text-xs tabular-nums text-resin-200/60">
+                          {price ?? "по запросу"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-6 text-xs text-resin-200/50">
+              Час ожидания сверх маршрута — 1 000 ₽. Точную стоимость по вашему направлению уточним при подтверждении заявки.
+            </p>
+          </div>
+        </div>
+      )}
     </Section>
   );
 }
