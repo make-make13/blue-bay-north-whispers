@@ -551,60 +551,125 @@ function GazeboSection() {
 
 /* ---------- Activities / Баня / Фурако ---------- */
 
+type ServiceCategory = "banya" | "summer" | "winter" | "activities";
+type ServiceItem = {
+  title: string;
+  body: string;
+  image: string;
+  categories: ServiceCategory[];
+};
+
+const serviceItems: ServiceItem[] = [
+  {
+    title: "Русская баня",
+    body: "Парилка на дровах, комната отдыха, душевая, санузел. Вместимость до 10 человек.",
+    image: "Фото · русская баня",
+    categories: ["banya"],
+  },
+  {
+    title: "Фурако",
+    body: "Кедровая купель с подогревом на дровах. Подходит для отдыха 4–6 человек.",
+    image: "Фото · фурако",
+    categories: ["banya"],
+  },
+  {
+    title: "Гидроциклы",
+    body: "Прогулки по воде с инструктором или самостоятельное катание в сезон.",
+    image: "Фото · гидроциклы",
+    categories: ["summer", "activities"],
+  },
+  {
+    title: "SUP-доска",
+    body: "Спокойные прогулки по воде и красивые виды в тёплое время года.",
+    image: "Фото · SUP",
+    categories: ["summer", "activities"],
+  },
+  {
+    title: "Катамаран",
+    body: "Неспешный отдых на воде для пары, семьи или небольшой компании.",
+    image: "Фото · катамаран",
+    categories: ["summer", "activities"],
+  },
+  {
+    title: "Квадроциклы",
+    body: "Маршруты по лесу и активный отдых на природе в сопровождении инструктора.",
+    image: "Фото · квадроциклы",
+    categories: ["summer", "activities"],
+  },
+  {
+    title: "Снегоходы",
+    body: "Маршруты по тундре и лесу с инструктором в устойчивый снежный сезон.",
+    image: "Фото · снегоход",
+    categories: ["winter", "activities"],
+  },
+  {
+    title: "Беговые лыжи",
+    body: "Прокат снаряжения и подготовленная лыжня рядом с базой.",
+    image: "Фото · лыжи",
+    categories: ["winter", "activities"],
+  },
+  {
+    title: "Северное сияние",
+    body: "Выезд к тёмным точкам наблюдения полярной ночью в сопровождении гида.",
+    image: "Фото · сияние",
+    categories: ["winter", "activities"],
+  },
+];
+
 function ActivitiesSection() {
-  const [tab, setTab] = useState<"banya" | "summer" | "winter">("banya");
+  const tabs: { id: "all" | ServiceCategory; label: string }[] = [
+    { id: "all", label: "Все" },
+    { id: "banya", label: "Баня и фурако" },
+    { id: "summer", label: "Лето" },
+    { id: "winter", label: "Зима" },
+    { id: "activities", label: "Активности" },
+  ];
+  const [tab, setTab] = useState<"all" | ServiceCategory>("all");
+  const visible =
+    tab === "all" ? serviceItems : serviceItems.filter((i) => i.categories.includes(tab));
+
   return (
     <Section
       id="activities"
       eyebrow="Услуги"
       title="Баня, фурако и сезонные развлечения"
-      lede="Русская баня и купель фурако работают круглый год. Водные и снежные активности — сезонные: летние доступны в тёплое время, зимние — при устойчивом снежном покрове."
+      lede="Русская дровяная баня и фурако доступны круглый год. Водные активности — летом, снежные — зимой. Выбирайте отдых по настроению: на воде, в лесу или под открытым небом."
     >
-      <div className="mb-6 flex flex-wrap gap-2">
-        <Tab active={tab === "banya"} onClick={() => setTab("banya")}>Баня и фурако</Tab>
-        <Tab active={tab === "summer"} onClick={() => setTab("summer")}>Полярный день (лето)</Tab>
-        <Tab active={tab === "winter"} onClick={() => setTab("winter")}>Полярная ночь (зима)</Tab>
+      <div className="mb-8 flex flex-wrap gap-2">
+        {tabs.map((t) => (
+          <Tab key={t.id} active={tab === t.id} onClick={() => setTab(t.id)}>
+            {t.label}
+          </Tab>
+        ))}
       </div>
 
-      {tab === "banya" && (
-        <div className="grid gap-5 md:grid-cols-[1.1fr_1fr]">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <MediaCard
-              title="Русская баня на дровах"
-              body="Отдельно стоящая баня с парной, комнатой отдыха и выходом к купели."
-              image="Фото · русская баня"
-            />
-            <MediaCard
-              title="Кедровая купель фурако"
-              body="Круглая купель с подогревом на дровах, для 4–6 человек. Работает круглый год."
-              image="Фото · фурако"
-            />
-          </div>
-          <PriceList title="Прайс" rows={banyaRows} note="Оплата — час к часу, минимальный заказ бани — 2 часа." />
-        </div>
-      )}
-
-      {tab === "summer" && (
-        <div className="grid gap-5 md:grid-cols-3">
-          <MediaCard title="Гидроцикл" body="Прогулки по Туломе с инструктором." image="Фото · гидроцикл" price="от 5 000 ₽ / 30 мин" />
-          <MediaCard title="SUP-сёрфинг" body="Аренда доски на воде рядом с базой." image="Фото · SUP" price="1 500 ₽ / час" />
-          <MediaCard title="Рыбалка" body="Сопровождение, аренда снастей — по запросу." image="Фото · рыбалка" price="по запросу" />
-          <MediaCard title="Пикник у воды" body="Организация выезда на берег с оборудованной точкой." image="Фото · пикник" price="от 3 000 ₽" />
-          <MediaCard title="Поход в тундру" body="Пешие маршруты с гидом, 3–6 часов." image="Фото · тундра" price="от 4 000 ₽ / чел." />
-          <MediaCard title="Велопрокат" body="Горные велосипеды для маршрутов вдоль реки." image="Фото · велопрокат" price="800 ₽ / час" />
-        </div>
-      )}
-
-      {tab === "winter" && (
-        <div className="grid gap-5 md:grid-cols-3">
-          <MediaCard title="Снегоход" body="Прокат с инструктором, маршруты по тундре." image="Фото · снегоход" price="от 6 000 ₽ / 30 мин" />
-          <MediaCard title="Беговые лыжи" body="Прокат, подготовленная лыжня рядом с базой." image="Фото · лыжи" price="500 ₽ / час" />
-          <MediaCard title="Ватрушки" body="Спуск с горки для детей и взрослых." image="Фото · ватрушки" price="300 ₽ / час" />
-          <MediaCard title="Охота за северным сиянием" body="Выезд к точкам наблюдения с гидом." image="Фото · сияние" price="от 5 000 ₽ / чел." />
-          <MediaCard title="Прогулка на хаски" body="Организуется партнёрами, по запросу." image="Фото · хаски" price="по запросу" />
-          <MediaCard title="Териберка (день)" body="Поездка на Северный Ледовитый океан." image="Фото · Териберка" price="24 000 ₽ / машина" />
-        </div>
-      )}
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {visible.map((item) => (
+          <article
+            key={item.title}
+            className="group flex flex-col overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] transition-colors hover:border-teal/40"
+          >
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-resin-900 to-[#0a1514]">
+              <div className="absolute inset-0 grid place-items-center text-center text-xs font-mono uppercase tracking-widest text-resin-200/40">
+                {item.image}
+              </div>
+            </div>
+            <div className="flex flex-1 flex-col p-5">
+              <h3 className="mb-2 text-base font-semibold text-resin-50">{item.title}</h3>
+              <p className="mb-4 flex-1 text-sm leading-relaxed text-resin-200/70">{item.body}</p>
+              <a
+                href="#request"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-teal transition-colors hover:text-teal-dim"
+              >
+                Подробнее
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 transition-transform group-hover:translate-x-0.5">
+                  <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
     </Section>
   );
 }
