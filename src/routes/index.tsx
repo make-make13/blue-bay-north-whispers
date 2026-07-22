@@ -624,27 +624,22 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
           <p className="text-[13px] leading-relaxed text-resin-200/75">{stay.description}</p>
 
           {/* Included */}
-          <div className="border-t border-resin-800 pt-4">
-            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.25em] text-resin-200/50">
+          <div className="border-t border-resin-800 pt-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.25em] text-resin-200/50">
               Включено в {stay.kind === "townhouse" ? "блок" : "коттедж"}
             </p>
-            <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid gap-x-5 gap-y-2 sm:grid-cols-2 md:grid-cols-3">
               {stay.details.map((d) => (
                 <div key={d.title}>
-                  <p className="mb-1.5 flex items-center gap-2 text-[13px] font-semibold text-resin-50">
-                    <span className="grid h-6 w-6 place-items-center rounded-md bg-teal/10 text-teal">
+                  <p className="mb-0.5 flex items-center gap-1.5 text-[12px] font-semibold text-resin-50">
+                    <span className="grid h-5 w-5 place-items-center rounded bg-teal/10 text-teal">
                       <DetailIcon kind={d.group} />
                     </span>
                     {d.title}
                   </p>
-                  <ul className="space-y-0.5 text-[12px] text-resin-200/80">
-                    {d.items.map((it) => (
-                      <li key={it} className="flex gap-2">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
-                        <span>{it}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="pl-[26px] text-[11.5px] leading-snug text-resin-200/75">
+                    {d.items.join(" · ")}
+                  </p>
                 </div>
               ))}
             </div>
