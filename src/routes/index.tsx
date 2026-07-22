@@ -807,11 +807,11 @@ function TransferSection() {
           <p className="mt-1 text-sm text-resin-200/70">Микроавтобус на 7 мест с багажным отделением. Все поездки — с водителем.</p>
 
           <div className="mt-6 grid grid-cols-1 gap-3 border-t border-resin-800 pt-6">
-            {[
-              ["seats" as const, "До 7 пассажиров"],
-              ["luggage" as const, "Место для багажа"],
-              ["comfort" as const, "Комфортный салон"],
-            ].map(([icon, text]) => (
+            {([
+              ["seats", "До 7 пассажиров"],
+              ["luggage", "Место для багажа"],
+              ["comfort", "Комфортный салон"],
+            ] as Array<["seats" | "luggage" | "comfort", string]>).map(([icon, text]) => (
               <div key={text} className="flex items-center gap-3 text-sm text-resin-200/85">
                 <span className="grid h-9 w-9 place-items-center rounded-lg border border-resin-800 bg-resin-950/60">
                   <TransferIcon kind={icon} />
