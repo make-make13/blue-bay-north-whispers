@@ -379,23 +379,170 @@ function StayCard({ stay }: { stay: Stay }) {
 
 /* ---------- Gazebos ---------- */
 
+const GAZEBO_SLIDES = [
+  "Беседка · внешний вид",
+  "Беседка · внутри, стол и лавки",
+  "Беседка · мангал",
+  "Беседка · вечер у огня",
+];
+
+const GAZEBO_CARDS: {
+  title: string;
+  body: string;
+  icon: "house" | "house2" | "crown" | "people";
+}[] = [
+  { title: "Беседка №1*", body: "Закреплена за Коттеджем №1.", icon: "house" },
+  { title: "Беседка №2*", body: "Закреплена за Коттеджем №2.", icon: "house2" },
+  { title: "Беседка VIP*", body: "Закреплена за VIP-блоком №3.", icon: "crown" },
+  { title: "Общая беседка", body: "Доступна по предварительному запросу.", icon: "people" },
+];
+
+function GazeboIcon({ kind }: { kind: "house" | "house2" | "crown" | "people" }) {
+  const cls = "h-5 w-5";
+  if (kind === "crown")
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={cls}>
+        <path d="M3 8l4 4 5-7 5 7 4-4-2 11H5L3 8z" strokeLinejoin="round" />
+      </svg>
+    );
+  if (kind === "people")
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={cls}>
+        <circle cx="9" cy="9" r="3" />
+        <circle cx="17" cy="10" r="2.5" />
+        <path d="M3 19c0-3 3-5 6-5s6 2 6 5" strokeLinecap="round" />
+        <path d="M15 18c.4-2 2.2-3.5 4-3.5s2.8 1 2.8 2.5" strokeLinecap="round" />
+      </svg>
+    );
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className={cls}>
+      <path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9z" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function GazeboSection() {
+  const [slide, setSlide] = useState(0);
+  const [active, setActive] = useState(0);
+  const total = GAZEBO_SLIDES.length;
+  const prev = () => setSlide((s) => (s - 1 + total) % total);
+  const next = () => setSlide((s) => (s + 1) % total);
+
   return (
     <Section
       id="gazebos"
       eyebrow="Беседки"
       title="Мангальные зоны на свежем воздухе"
-      lede="Часть беседок закреплена за конкретными коттеджами (№1, №2, VIP-блок №3). Отдельная общая беседка доступна по предварительному запросу."
+      lede="Часть беседок закреплена за конкретными коттеджами (№1, №2, VIP-блок №3). Общая беседка предоставляется по предварительному запросу."
     >
-      <div className="grid gap-5 md:grid-cols-[1.1fr_1fr]">
-        <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-resin-800">
-          <Placeholder label="Фото · беседка с мангалом" className="absolute inset-0" />
+      <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
+        {/* Left: image carousel */}
+        <div className="rounded-3xl border border-resin-800 bg-[color:var(--color-surface)] p-4 sm:p-5">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-resin-800">
+            <Placeholder label={GAZEBO_SLIDES[slide]} className="absolute inset-0" />
+            <button
+              type="button"
+              aria-label="Предыдущее фото"
+              onClick={prev}
+              className="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              aria-label="Следующее фото"
+              onClick={next}
+              className="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-resin-200/15 bg-resin-950/70 text-resin-50 backdrop-blur transition-colors hover:border-teal hover:text-teal"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <span className="absolute bottom-4 right-4 rounded-full border border-resin-200/15 bg-resin-950/70 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-100 backdrop-blur">
+              {slide + 1} / {total}
+            </span>
+          </div>
+          <div className="mt-4 grid grid-cols-4 gap-3">
+            {GAZEBO_SLIDES.map((label, i) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setSlide(i)}
+                aria-label={`Открыть фото ${i + 1}`}
+                className={`relative aspect-[4/3] overflow-hidden rounded-xl border transition-colors ${
+                  slide === i ? "border-teal" : "border-resin-800 hover:border-resin-400"
+                }`}
+              >
+                <Placeholder label={label} className="absolute inset-0" />
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 flex justify-center gap-2">
+            {GAZEBO_SLIDES.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${
+                  slide === i ? "w-6 bg-teal" : "w-1.5 bg-resin-800"
+                }`}
+              />
+            ))}
+          </div>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <FactCard title="Беседка №1" body="Закреплена за Коттеджем №1. Стол, лавки, мангал." />
-          <FactCard title="Беседка №2" body="Закреплена за Коттеджем №2. Мангал, зона для компании." />
-          <FactCard title="Беседка VIP" body="Закреплена за VIP-блоком таунхауса №3." />
-          <FactCard title="Общая беседка" body="Доступна остальным гостям по запросу." />
+
+        {/* Right: cards */}
+        <div className="flex flex-col">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {GAZEBO_CARDS.map((c, i) => {
+              const isActive = active === i;
+              return (
+                <button
+                  key={c.title}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  className={`group relative flex flex-col items-start gap-3 rounded-2xl border p-5 text-left transition-colors ${
+                    isActive
+                      ? "border-teal bg-teal/5"
+                      : "border-resin-800 bg-[color:var(--color-surface)] hover:border-resin-400"
+                  }`}
+                >
+                  <span
+                    className={`grid h-11 w-11 place-items-center rounded-full ${
+                      isActive ? "bg-teal/20 text-teal" : "bg-resin-900 text-resin-200/70"
+                    }`}
+                  >
+                    <GazeboIcon kind={c.icon} />
+                  </span>
+                  <div>
+                    <h3 className="text-base font-semibold text-resin-50">{c.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-resin-200/70">{c.body}</p>
+                  </div>
+                  {isActive && (
+                    <span className="absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full bg-teal text-resin-950">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-3.5 w-3.5">
+                        <path d="M5 12l5 5 9-11" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="mt-5 text-xs leading-relaxed text-resin-200/55">
+            * Закреплена за конкретным коттеджем (№1, №2, VIP-блок №3). Аренда возможна только при отсутствии заезда в соответствующий коттедж.
+          </p>
+
+          <a
+            href="#request"
+            className="mt-6 inline-flex items-center justify-center gap-2 self-start rounded-full bg-teal px-6 py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
+          >
+            Оставить заявку на беседку
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+              <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
         </div>
       </div>
     </Section>
