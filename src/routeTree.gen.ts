@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminTextsRouteImport } from './routes/admin.texts'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminServicesRouteImport } from './routes/admin.services'
 import { Route as AdminRoomsRouteImport } from './routes/admin.rooms'
@@ -19,6 +20,7 @@ import { Route as AdminPricesRouteImport } from './routes/admin.prices'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminCottagesRouteImport } from './routes/admin.cottages'
+import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -33,6 +35,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTextsRoute = AdminTextsRouteImport.update({
+  id: '/texts',
+  path: '/texts',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -70,10 +77,16 @@ const AdminCottagesRoute = AdminCottagesRouteImport.update({
   path: '/cottages',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/cottages': typeof AdminCottagesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/login': typeof AdminLoginRoute
@@ -81,10 +94,12 @@ export interface FileRoutesByFullPath {
   '/admin/rooms': typeof AdminRoomsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/texts': typeof AdminTextsRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/cottages': typeof AdminCottagesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/login': typeof AdminLoginRoute
@@ -92,12 +107,14 @@ export interface FileRoutesByTo {
   '/admin/rooms': typeof AdminRoomsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/texts': typeof AdminTextsRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/cottages': typeof AdminCottagesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/login': typeof AdminLoginRoute
@@ -105,6 +122,7 @@ export interface FileRoutesById {
   '/admin/rooms': typeof AdminRoomsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/texts': typeof AdminTextsRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -112,6 +130,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/admin/bookings'
     | '/admin/cottages'
     | '/admin/gallery'
     | '/admin/login'
@@ -119,10 +138,12 @@ export interface FileRouteTypes {
     | '/admin/rooms'
     | '/admin/services'
     | '/admin/settings'
+    | '/admin/texts'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/bookings'
     | '/admin/cottages'
     | '/admin/gallery'
     | '/admin/login'
@@ -130,11 +151,13 @@ export interface FileRouteTypes {
     | '/admin/rooms'
     | '/admin/services'
     | '/admin/settings'
+    | '/admin/texts'
     | '/admin'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/admin/bookings'
     | '/admin/cottages'
     | '/admin/gallery'
     | '/admin/login'
@@ -142,6 +165,7 @@ export interface FileRouteTypes {
     | '/admin/rooms'
     | '/admin/services'
     | '/admin/settings'
+    | '/admin/texts'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -171,6 +195,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/texts': {
+      id: '/admin/texts'
+      path: '/texts'
+      fullPath: '/admin/texts'
+      preLoaderRoute: typeof AdminTextsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -222,10 +253,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCottagesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminBookingsRoute: typeof AdminBookingsRoute
   AdminCottagesRoute: typeof AdminCottagesRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -233,10 +272,12 @@ interface AdminRouteChildren {
   AdminRoomsRoute: typeof AdminRoomsRoute
   AdminServicesRoute: typeof AdminServicesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTextsRoute: typeof AdminTextsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBookingsRoute: AdminBookingsRoute,
   AdminCottagesRoute: AdminCottagesRoute,
   AdminGalleryRoute: AdminGalleryRoute,
   AdminLoginRoute: AdminLoginRoute,
@@ -244,6 +285,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminRoomsRoute: AdminRoomsRoute,
   AdminServicesRoute: AdminServicesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminTextsRoute: AdminTextsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
