@@ -334,11 +334,8 @@ function TopBar() {
     <header className="sticky top-0 z-40 border-b border-resin-800/70 bg-resin-950/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <a href="#top" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-teal/15 text-teal">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path d="M4 16c3-2 5-2 8 0s5 2 8 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path d="M4 12c3-2 5-2 8 0s5 2 8 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".6" />
-            </svg>
+          <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-resin-900 ring-1 ring-resin-800">
+            <img src={logoAsset.url} alt="Голубая Бухта" className="h-full w-full object-cover" />
           </span>
           <span className="text-sm font-medium tracking-tight text-resin-50">Голубая&nbsp;Бухта</span>
         </a>
