@@ -982,7 +982,7 @@ function RequestSection() {
             <div className="mt-8 space-y-2 border-t border-resin-800/60 pt-6 text-sm text-resin-200/80">
               <p><span className="text-resin-200/50">Тел.:</span> <a href="tel:+78152780111" className="text-resin-50 hover:text-teal">8 (8152) 780-111</a></p>
               <p><span className="text-resin-200/50">Адрес:</span> Верхнетуломское шоссе, 36 км</p>
-              <p><span className="text-resin-200/50">Координаты:</span> 68.85° N, 32.78° E</p>
+              <p><span className="text-resin-200/50">Telegram:</span> <a href="https://t.me/golubayabuhta" target="_blank" rel="noopener noreferrer" className="text-resin-50 hover:text-teal">@golubayabuhta</a></p>
             </div>
           </div>
 
