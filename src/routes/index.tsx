@@ -1046,6 +1046,7 @@ function ActivitiesSection() {
     { id: "activities", label: "Активности" },
   ];
   const [tab, setTab] = useState<"all" | ServiceCategory>("all");
+  const [active, setActive] = useState<ServiceItem | null>(null);
   const visible =
     tab === "all" ? serviceItems : serviceItems.filter((i) => i.categories.includes(tab));
 
@@ -1082,15 +1083,16 @@ function ActivitiesSection() {
             <div className="flex flex-1 flex-col p-5">
               <h3 className="mb-2 text-base font-semibold text-resin-50">{item.title}</h3>
               <p className="mb-4 flex-1 text-sm leading-relaxed text-resin-200/70">{item.body}</p>
-              <a
-                href="#request"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-teal transition-colors hover:text-teal-dim"
+              <button
+                type="button"
+                onClick={() => setActive(item)}
+                className="inline-flex items-center gap-1.5 text-left text-sm font-medium text-teal transition-colors hover:text-teal-dim"
               >
                 Подробнее
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 transition-transform group-hover:translate-x-0.5">
                   <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </a>
+              </button>
             </div>
           </article>
         ))}
@@ -1113,7 +1115,131 @@ function ActivitiesSection() {
           ))}
         </div>
       </div>
+
+      <ServiceModal item={active} onClose={() => setActive(null)} />
     </Section>
+  );
+}
+
+function ServiceModal({ item, onClose }: { item: ServiceItem | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!item) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [item, onClose]);
+
+  if (!item) return null;
+  const images = pics(item.slug);
+  const [cover, ...rest] = images;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 p-0 backdrop-blur-sm sm:items-center sm:p-6" onClick={onClose}>
+      <div
+        className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-3xl border border-resin-800 bg-[color:var(--color-surface)] shadow-2xl sm:rounded-3xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Закрыть"
+          className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full border border-resin-800 bg-black/40 text-resin-100 backdrop-blur transition-colors hover:border-teal/50 hover:text-teal"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+            <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+          </svg>
+        </button>
+
+        <div className="grid gap-0 overflow-y-auto md:grid-cols-[1.05fr_1fr]">
+          <div className="relative aspect-[4/3] w-full bg-gradient-to-br from-resin-900 to-[#0a1514] md:aspect-auto md:min-h-[420px]">
+            {cover ? (
+              <img src={cover} alt={item.title} className="absolute inset-0 h-full w-full object-cover" />
+            ) : (
+              <div className="absolute inset-0 grid place-items-center text-xs font-mono uppercase tracking-widest text-resin-200/40">
+                {item.title}
+              </div>
+            )}
+            {rest.length > 0 && (
+              <div className="absolute inset-x-3 bottom-3 flex gap-2 overflow-x-auto">
+                {rest.slice(0, 6).map((src, i) => (
+                  <img key={i} src={src} alt="" className="h-14 w-20 flex-none rounded-lg object-cover ring-1 ring-white/10" />
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-6 p-6 sm:p-8">
+            <div>
+              {item.meta && (
+                <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-teal/80">{item.meta}</p>
+              )}
+              <h3 className="text-2xl font-semibold text-resin-50">{item.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-resin-200/75">{item.body}</p>
+            </div>
+
+            {item.prices && item.prices.length > 0 && (
+              <div className="overflow-hidden rounded-2xl border border-resin-800">
+                {item.prices.map((row, i) => (
+                  <div
+                    key={row.label}
+                    className={`flex items-center justify-between gap-4 px-4 py-3 ${i > 0 ? "border-t border-resin-800/70" : ""}`}
+                  >
+                    <span className="text-sm text-resin-200/85">{row.label}</span>
+                    <span className="font-mono text-sm font-semibold tabular-nums text-teal">{row.price}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {item.included && item.included.length > 0 && (
+              <div>
+                <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-resin-200/60">Включено</p>
+                <div className="flex flex-wrap gap-2">
+                  {item.included.map((tag) => (
+                    <span key={tag} className="rounded-full border border-resin-800 bg-black/20 px-3 py-1 text-xs text-resin-100">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {item.notes && item.notes.length > 0 && (
+              <ul className="space-y-1.5 text-xs leading-relaxed text-resin-200/60">
+                {item.notes.map((n) => (
+                  <li key={n} className="flex gap-2">
+                    <span className="text-teal">•</span>
+                    <span>{n}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="mt-auto flex flex-wrap gap-3 pt-2">
+              <a
+                href="#request"
+                onClick={onClose}
+                className="inline-flex items-center justify-center rounded-full bg-teal px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-teal-dim"
+              >
+                Забронировать
+              </a>
+              <button
+                type="button"
+                onClick={onClose}
+                className="inline-flex items-center justify-center rounded-full border border-resin-800 px-5 py-2.5 text-sm font-medium text-resin-100 transition-colors hover:border-teal/50"
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
