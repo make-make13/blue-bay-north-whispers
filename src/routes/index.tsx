@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import logoAsset from "@/assets/golubaya-buhta-logo.webp.asset.json";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
