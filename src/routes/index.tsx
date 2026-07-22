@@ -1320,9 +1320,12 @@ function SiteFooter() {
   return (
     <footer className="border-t border-resin-800/60 bg-resin-950 py-10">
       <div className="mx-auto grid max-w-6xl gap-6 px-6 text-sm text-resin-200/60 md:grid-cols-3">
-        <div>
-          <p className="mb-2 font-medium text-resin-50">Голубая Бухта</p>
-          <p>Загородный отель на берегу реки Тулома, 40 км от Мурманска.</p>
+        <div className="flex items-start gap-4">
+          <img src={logoAsset.url} alt="Голубая Бухта" className="h-16 w-16 rounded-full ring-1 ring-resin-800" />
+          <div>
+            <p className="mb-2 font-medium text-resin-50">Голубая Бухта</p>
+            <p>Загородный отель на берегу реки Тулома, 40 км от Мурманска.</p>
+          </div>
         </div>
         <div className="space-y-1">
           <p>Верхнетуломское шоссе, 36 км</p>
