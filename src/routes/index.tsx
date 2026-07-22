@@ -419,23 +419,11 @@ function Hero() {
 /* ---------- Stays ---------- */
 
 function StaysSection() {
-  const [tab, setTab] = useState<"all" | "cottage" | "townhouse">("all");
-  const list = stays.filter((s) => (tab === "all" ? true : s.kind === tab));
   return (
     <Section id="stays" eyebrow="Размещение" title="Коттеджи для компаний, семьи и уютных пар"
       lede="Отдельные коттеджи и блоки таунхауса №3 — это разные типы объектов. Вместимость у каждого своя, от 2 до 12 гостей.">
-      <div className="mb-8 flex flex-wrap gap-2">
-        <Tab active={tab === "all"} onClick={() => setTab("all")}>Все · {stays.length}</Tab>
-        <Tab active={tab === "cottage"} onClick={() => setTab("cottage")}>
-          Отдельные коттеджи · {stays.filter((s) => s.kind === "cottage").length}
-        </Tab>
-        <Tab active={tab === "townhouse"} onClick={() => setTab("townhouse")}>
-          Блоки таунхауса №3 · {stays.filter((s) => s.kind === "townhouse").length}
-        </Tab>
-      </div>
-
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {list.map((s) => (
+        {stays.map((s) => (
           <StayCard key={s.id} stay={s} />
         ))}
       </div>
