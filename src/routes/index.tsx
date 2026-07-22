@@ -407,7 +407,7 @@ function Hero() {
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-resin-950/55 via-resin-950/75 to-resin-950" />
-      <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-20 md:pb-32 md:pt-28">
+      <div className="relative mx-auto max-w-6xl px-6 pb-32 pt-28 md:pb-48 md:pt-44">
         <div className="max-w-2xl">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-resin-800 bg-resin-950/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-teal">
             <span className="h-1.5 w-1.5 rounded-full bg-teal" />
