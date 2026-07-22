@@ -327,51 +327,211 @@ function StaysSection() {
 }
 
 function StayCard({ stay }: { stay: Stay }) {
+  const [open, setOpen] = useState(false);
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] transition-colors hover:border-teal/50">
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <Placeholder
-          label={stay.kind === "cottage" ? "Фото · коттедж" : "Фото · блок таунхауса"}
-          className="absolute inset-0"
-        />
-        <span className="absolute left-3 top-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-resin-200 backdrop-blur">
-          {stay.kind === "cottage" ? "Коттедж" : "Таунхаус"}
-        </span>
-        <span className="absolute right-3 top-3 rounded-full bg-teal px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-resin-950">
-          {formatPrice(stay.price)}<span className="opacity-70"> / сут</span>
-        </span>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-4 p-5">
-        <header className="flex items-baseline justify-between gap-3">
-          <h3 className="text-lg font-medium text-resin-50">{stay.name}</h3>
-          <span className="shrink-0 font-mono text-xs tabular-nums text-teal">
-            до {stay.capacity} гостей
+    <>
+      <article className="group flex flex-col overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] transition-colors hover:border-teal/50">
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <Placeholder
+            label={stay.kind === "cottage" ? "Фото · коттедж" : "Фото · блок таунхауса"}
+            className="absolute inset-0"
+          />
+          <span className="absolute left-3 top-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-resin-200 backdrop-blur">
+            {stay.kind === "cottage" ? "Коттедж" : "Таунхаус"}
           </span>
-        </header>
-        <ul className="space-y-1.5 text-sm text-resin-200/75">
-          {stay.bullets.map((b) => (
-            <li key={b} className="flex gap-2">
-              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
-          {stay.tags.map((t) => (
-            <span key={t} className="rounded-full border border-resin-800 px-2.5 py-0.5 text-[11px] text-resin-200/60">
-              {t}
-            </span>
-          ))}
+          <span className="absolute right-3 top-3 rounded-full bg-teal px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-resin-950">
+            {formatPrice(stay.price)}<span className="opacity-70"> / сут</span>
+          </span>
         </div>
-        <a
-          href="#request"
-          className="mt-2 inline-flex items-center justify-center rounded-full border border-teal/40 px-4 py-2 text-xs font-semibold text-teal transition-colors hover:bg-teal hover:text-resin-950"
+
+        <div className="flex flex-1 flex-col gap-4 p-5">
+          <header className="flex items-baseline justify-between gap-3">
+            <h3 className="text-lg font-medium text-resin-50">{stay.name}</h3>
+            <span className="shrink-0 font-mono text-xs tabular-nums text-teal">
+              до {stay.capacity} гостей
+            </span>
+          </header>
+          <ul className="space-y-1.5 text-sm text-resin-200/75">
+            {stay.bullets.map((b) => (
+              <li key={b} className="flex gap-2">
+                <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
+            {stay.tags.map((t) => (
+              <span key={t} className="rounded-full border border-resin-800 px-2.5 py-0.5 text-[11px] text-resin-200/60">
+                {t}
+              </span>
+            ))}
+          </div>
+          <div className="mt-2 flex gap-2">
+            <a
+              href="#request"
+              className="inline-flex flex-1 items-center justify-center rounded-full bg-teal px-4 py-2 text-xs font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
+            >
+              Забронировать
+            </a>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="inline-flex flex-1 items-center justify-center rounded-full border border-resin-200/25 px-4 py-2 text-xs font-semibold text-resin-50 transition-colors hover:border-teal hover:text-teal"
+            >
+              Подробнее
+            </button>
+          </div>
+        </div>
+      </article>
+
+      {open && <StayModal stay={stay} onClose={() => setOpen(false)} />}
+    </>
+  );
+}
+
+function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
+  const [active, setActive] = useState(0);
+  const slides = [
+    `${stay.name} · гостиная`,
+    `${stay.name} · спальня`,
+    `${stay.name} · кухня`,
+    `${stay.name} · санузел`,
+    `${stay.name} · внешний вид`,
+    `${stay.name} · беседка`,
+  ];
+  return (
+    <div
+      className="fixed inset-0 z-50 grid place-items-center bg-resin-950/85 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-3xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-5 top-5 z-10 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-200 hover:border-teal hover:text-teal"
+          aria-label="Закрыть"
         >
-          Оставить заявку
-        </a>
+          ✕
+        </button>
+
+        <div className="grid gap-8 md:grid-cols-[1fr_1.15fr]">
+          {/* Left: info */}
+          <div className="flex flex-col gap-6">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 py-1.5 text-xs font-medium text-teal">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <circle cx="9" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.7" />
+                  <circle cx="16" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.7" />
+                  <path d="M3.5 18c.6-2.4 2.8-4 5.5-4s4.9 1.6 5.5 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                  <path d="M14.5 17c.5-1.8 2-3 4-3s3.5 1.2 4 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                </svg>
+                До {stay.capacity} гостей
+              </span>
+            </div>
+
+            <div>
+              <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-resin-200/50">
+                {stay.kind === "cottage" ? "Отдельный коттедж" : "Блок таунхауса №3"}
+              </p>
+              <h3 className="font-serif text-4xl leading-tight text-resin-50 md:text-5xl">{stay.name}</h3>
+            </div>
+
+            <div>
+              <p className="font-mono text-3xl font-semibold tabular-nums text-teal">
+                {formatPrice(stay.price)}
+              </p>
+              <p className="mt-1 text-sm text-resin-200/60">за сутки</p>
+            </div>
+
+            <div className="rounded-2xl border border-resin-800 bg-resin-950/40 p-5">
+              <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-resin-50">
+                <span className="grid h-8 w-8 place-items-center rounded-lg bg-teal/10 text-teal">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M3 12l9-7 9 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M5 10v9h14v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                Что внутри
+              </p>
+              <ul className="space-y-2 text-sm text-resin-200/85">
+                {stay.bullets.map((b) => (
+                  <li key={b} className="flex gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-teal" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {stay.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {stay.tags.map((t) => (
+                  <span key={t} className="rounded-full border border-resin-800 px-3 py-1 text-[11px] text-resin-200/70">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-auto flex flex-wrap gap-3 pt-2">
+              <a
+                href="#request"
+                onClick={onClose}
+                className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
+              >
+                Забронировать
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+              <button
+                type="button"
+                onClick={onClose}
+                className="inline-flex items-center gap-2 rounded-full border border-resin-200/25 px-6 py-3 text-sm text-resin-50 transition-colors hover:border-teal hover:text-teal"
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+
+          {/* Right: gallery */}
+          <div className="flex gap-3">
+            <div className="relative flex-1 overflow-hidden rounded-2xl border border-resin-800">
+              <Placeholder label={slides[active]} className="absolute inset-0" />
+              <span className="absolute bottom-3 left-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200 backdrop-blur">
+                {active + 1} / {slides.length}
+              </span>
+            </div>
+            <div className="flex w-20 flex-col gap-2 md:w-24">
+              {slides.slice(0, 5).map((label, i) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  className={`relative aspect-square overflow-hidden rounded-xl border transition-colors ${
+                    active === i ? "border-teal ring-2 ring-teal/40" : "border-resin-800 hover:border-resin-200/40"
+                  }`}
+                  aria-label={label}
+                >
+                  <Placeholder label="" className="absolute inset-0" />
+                </button>
+              ))}
+              {slides.length > 5 && (
+                <div className="grid aspect-square place-items-center rounded-xl border border-resin-800 bg-resin-950/60 text-center">
+                  <div>
+                    <p className="font-mono text-sm font-semibold text-resin-50">+{slides.length - 5}</p>
+                    <p className="text-[10px] text-resin-200/60">фото</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-    </article>
+    </div>
   );
 }
 
