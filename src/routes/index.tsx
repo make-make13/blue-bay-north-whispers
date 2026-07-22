@@ -214,7 +214,6 @@ function Index() {
         <GazeboSection />
         <ActivitiesSection />
         <TransferSection />
-        <ExtrasSection />
         <TrustSection />
         <StepsSection />
         <RequestSection />
