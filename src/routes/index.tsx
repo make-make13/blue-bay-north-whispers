@@ -771,23 +771,6 @@ function GazeboSection() {
               {safeSlide + 1} / {total}
             </span>
           </div>
-          {currentImages.length > 1 && (
-            <div className="mt-4 grid grid-cols-4 gap-3">
-              {currentImages.slice(0, 4).map((src, i) => (
-                <button
-                  key={src}
-                  type="button"
-                  onClick={() => setSlide(i)}
-                  aria-label={`Открыть фото ${i + 1}`}
-                  className={`relative aspect-[4/3] overflow-hidden rounded-xl border transition-colors ${
-                    safeSlide === i ? "border-teal" : "border-resin-800 hover:border-resin-400"
-                  }`}
-                >
-                  <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Right: cards */}
