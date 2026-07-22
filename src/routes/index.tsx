@@ -467,12 +467,8 @@ function StayCard({ stay }: { stay: Stay }) {
           ) : (
             <Placeholder label={stay.kind === "cottage" ? "Фото · коттедж" : "Фото · блок таунхауса"} className="absolute inset-0" />
           )}
-          <span className="absolute left-3 top-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-resin-200 backdrop-blur">
-            {stay.kind === "cottage" ? "Коттедж" : "Таунхаус"}
-          </span>
-          <span className="absolute right-3 top-3 rounded-full bg-teal px-3 py-1 font-mono text-[11px] font-semibold tabular-nums text-resin-950">
-            {formatPrice(stay.price)}<span className="opacity-70"> {stay.priceUnit ?? "/ сут"}</span>
-          </span>
+
+
         </div>
 
         <div className="flex flex-1 flex-col gap-4 p-5">
