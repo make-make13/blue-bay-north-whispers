@@ -866,65 +866,26 @@ type ServiceCategory = "banya" | "summer" | "winter" | "activities";
 type ServiceItem = {
   title: string;
   body: string;
-  image: string;
+  slug: string;
   categories: ServiceCategory[];
 };
 
 const serviceItems: ServiceItem[] = [
-  {
-    title: "Русская баня",
-    body: "Парилка на дровах, комната отдыха, душевая, санузел. Вместимость до 10 человек.",
-    image: "Фото · русская баня",
-    categories: ["banya"],
-  },
-  {
-    title: "Фурако",
-    body: "Кедровая купель с подогревом на дровах. Подходит для отдыха 4–6 человек.",
-    image: "Фото · фурако",
-    categories: ["banya"],
-  },
-  {
-    title: "Гидроциклы",
-    body: "Прогулки по воде с инструктором или самостоятельное катание в сезон.",
-    image: "Фото · гидроциклы",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "SUP-доска",
-    body: "Спокойные прогулки по воде и красивые виды в тёплое время года.",
-    image: "Фото · SUP",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "Катамаран",
-    body: "Неспешный отдых на воде для пары, семьи или небольшой компании.",
-    image: "Фото · катамаран",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "Квадроциклы",
-    body: "Маршруты по лесу и активный отдых на природе в сопровождении инструктора.",
-    image: "Фото · квадроциклы",
-    categories: ["summer", "activities"],
-  },
-  {
-    title: "Снегоходы",
-    body: "Маршруты по тундре и лесу с инструктором в устойчивый снежный сезон.",
-    image: "Фото · снегоход",
-    categories: ["winter", "activities"],
-  },
-  {
-    title: "Беговые лыжи",
-    body: "Прокат снаряжения и подготовленная лыжня рядом с базой.",
-    image: "Фото · лыжи",
-    categories: ["winter", "activities"],
-  },
-  {
-    title: "Северное сияние",
-    body: "Выезд к тёмным точкам наблюдения полярной ночью в сопровождении гида.",
-    image: "Фото · сияние",
-    categories: ["winter", "activities"],
-  },
+  { title: "Русская баня", body: "Парилка на дровах, комната отдыха, душевая, санузел. Вместимость до 10 человек.", slug: "banya", categories: ["banya"] },
+  { title: "Фурако", body: "Кедровая купель с подогревом на дровах. Подходит для отдыха 4–6 человек.", slug: "furako", categories: ["banya"] },
+  { title: "Веник (дуб / берёза)", body: "Свежие банные веники к парной — дубовый или берёзовый на выбор.", slug: "venik", categories: ["banya"] },
+  { title: "Гигиенический набор", body: "Одноразовый набор для гостей бани и коттеджа.", slug: "hygiene", categories: ["banya"] },
+  { title: "Гидроциклы", body: "Прогулки по воде с инструктором или самостоятельное катание в сезон.", slug: "jetski", categories: ["summer", "activities"] },
+  { title: "SUP-доска", body: "Спокойные прогулки по воде и красивые виды в тёплое время года.", slug: "sup", categories: ["summer", "activities"] },
+  { title: "Катамаран", body: "Неспешный отдых на воде для пары, семьи или небольшой компании.", slug: "catamaran", categories: ["summer", "activities"] },
+  { title: "Квадроциклы", body: "Маршруты по лесу и активный отдых на природе в сопровождении инструктора.", slug: "atv", categories: ["summer", "activities"] },
+  { title: "Детские квадроциклы", body: "Безопасные модели для юных гостей — катание по площадке.", slug: "atv-kids", categories: ["summer", "activities"] },
+  { title: "Бадминтон", body: "Ракетки и воланы — активный отдых на свежем воздухе для всей компании.", slug: "badminton", categories: ["summer", "activities"] },
+  { title: "Снегоходы", body: "Маршруты по тундре и лесу с инструктором в устойчивый снежный сезон.", slug: "snowmobile", categories: ["winter", "activities"] },
+  { title: "Беговые лыжи", body: "Прокат снаряжения и подготовленная лыжня рядом с базой.", slug: "ski", categories: ["winter", "activities"] },
+  { title: "Ватрушки", body: "Тюбинг с горки — простое и весёлое зимнее развлечение.", slug: "tubing", categories: ["winter", "activities"] },
+  { title: "Снежный банан", body: "Катание с ветерком за снегоходом — азарт для компании.", slug: "banana", categories: ["winter", "activities"] },
+  { title: "Тимбилдинг", body: "Программы активностей и командных игр под открытым небом.", slug: "teambuilding", categories: ["activities"] },
 ];
 
 function ActivitiesSection() {
