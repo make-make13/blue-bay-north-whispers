@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import logoAsset from "@/assets/golubaya-buhta-logo.webp.asset.json";
+import heroAsset from "@/assets/hero-gb-cottages.webp.asset.json";
 
 
 export const Route = createFileRoute("/")({
@@ -362,11 +363,12 @@ function TopBar() {
 function Hero() {
   return (
     <section id="top" className="relative overflow-hidden border-b border-resin-800/60">
-      <Placeholder
-        label="Фото · вид на коттеджи и Тулому"
-        className="absolute inset-0 opacity-40"
+      <img
+        src={heroAsset.url}
+        alt="Коттеджи «Голубой Бухты» вечером"
+        className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-resin-950/40 via-resin-950/70 to-resin-950" />
+      <div className="absolute inset-0 bg-gradient-to-b from-resin-950/55 via-resin-950/75 to-resin-950" />
       <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-20 md:pb-32 md:pt-28">
         <div className="max-w-2xl">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-resin-800 bg-resin-950/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-teal">
