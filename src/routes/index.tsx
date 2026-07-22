@@ -540,33 +540,36 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
                 {stay.kind === "cottage" ? "Отдельный коттедж" : "Блок таунхауса №3"}
               </p>
               <h3 className="font-serif text-4xl leading-tight text-resin-50 md:text-5xl">{stay.name}</h3>
+              <p className="mt-3 text-sm font-medium text-teal">{stay.tagline}</p>
+              <p className="mt-2 text-sm leading-relaxed text-resin-200/75">{stay.description}</p>
             </div>
 
-            <div>
+            <div className="flex items-baseline gap-3">
               <p className="font-mono text-3xl font-semibold tabular-nums text-teal">
                 {formatPrice(stay.price)}
               </p>
-              <p className="mt-1 text-sm text-resin-200/60">за сутки</p>
+              <p className="text-sm text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</p>
             </div>
 
-            <div className="rounded-2xl border border-resin-800 bg-resin-950/40 p-5">
-              <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-resin-50">
-                <span className="grid h-8 w-8 place-items-center rounded-lg bg-teal/10 text-teal">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M3 12l9-7 9 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M5 10v9h14v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                Что внутри
-              </p>
-              <ul className="space-y-2 text-sm text-resin-200/85">
-                {stay.bullets.map((b) => (
-                  <li key={b} className="flex gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-teal" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {stay.details.map((d) => (
+                <div key={d.title} className="rounded-2xl border border-resin-800 bg-resin-950/40 p-4">
+                  <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-resin-50">
+                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-teal/10 text-teal">
+                      <DetailIcon kind={d.group} />
+                    </span>
+                    {d.title}
+                  </p>
+                  <ul className="space-y-1.5 text-[13px] text-resin-200/80">
+                    {d.items.map((it) => (
+                      <li key={it} className="flex gap-2">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
+                        <span>{it}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
 
             {stay.tags.length > 0 && (
