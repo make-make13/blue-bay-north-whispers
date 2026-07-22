@@ -1357,13 +1357,13 @@ function TransferSection() {
             </span>
           </div>
           {TRANSFER_GALLERY.length > 1 && (
-            <div className="mt-3 grid grid-cols-3 gap-3">
+            <div className="mt-3 flex gap-2">
               {TRANSFER_GALLERY.map((src, i) => (
                 <button
                   key={src}
                   type="button"
                   onClick={() => setSlide(i)}
-                  className={`relative aspect-[16/10] overflow-hidden rounded-lg border transition-colors ${
+                  className={`relative aspect-[16/10] flex-1 min-w-0 overflow-hidden rounded-md border transition-colors ${
                     i === slide ? "border-teal" : "border-resin-800 hover:border-teal/60"
                   }`}
                 >
