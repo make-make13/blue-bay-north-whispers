@@ -1055,38 +1055,48 @@ function TransferSection() {
         <div>
           <div className="relative overflow-hidden rounded-2xl border border-resin-800 bg-[color:var(--color-surface)]">
             <div className="relative aspect-[16/10]">
-              <Placeholder label={TRANSFER_GALLERY[slide]} className="absolute inset-0" />
+              {TRANSFER_GALLERY[slide] ? (
+                <img src={TRANSFER_GALLERY[slide]} alt={`Трансфер · фото ${slide + 1}`} className="absolute inset-0 h-full w-full object-cover" />
+              ) : (
+                <Placeholder label="Микроавтобус" className="absolute inset-0" />
+              )}
             </div>
-            <button
-              type="button"
-              onClick={() => setSlide((s) => (s - 1 + total) % total)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
-              aria-label="Предыдущее фото"
-            >‹</button>
-            <button
-              type="button"
-              onClick={() => setSlide((s) => (s + 1) % total)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
-              aria-label="Следующее фото"
-            >›</button>
+            {total > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSlide((s) => (s - 1 + total) % total)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
+                  aria-label="Предыдущее фото"
+                >‹</button>
+                <button
+                  type="button"
+                  onClick={() => setSlide((s) => (s + 1) % total)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/70 text-resin-50 backdrop-blur hover:border-teal hover:text-teal"
+                  aria-label="Следующее фото"
+                >›</button>
+              </>
+            )}
             <span className="absolute bottom-3 right-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200/80">
-              {slide + 1}/{total}
+              {slide + 1}/{Math.max(total, 1)}
             </span>
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-3">
-            {TRANSFER_GALLERY.map((label, i) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => setSlide(i)}
-                className={`relative aspect-[16/10] overflow-hidden rounded-lg border transition-colors ${
-                  i === slide ? "border-teal" : "border-resin-800 hover:border-teal/60"
-                }`}
-              >
-                <Placeholder label={`${i + 1}`} className="absolute inset-0" />
-              </button>
-            ))}
-          </div>
+          {TRANSFER_GALLERY.length > 1 && (
+            <div className="mt-3 grid grid-cols-3 gap-3">
+              {TRANSFER_GALLERY.map((src, i) => (
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setSlide(i)}
+                  className={`relative aspect-[16/10] overflow-hidden rounded-lg border transition-colors ${
+                    i === slide ? "border-teal" : "border-resin-800 hover:border-teal/60"
+                  }`}
+                >
+                  <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Info */}
