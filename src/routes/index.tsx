@@ -50,6 +50,7 @@ type Stay = {
   bullets: string[];
   tags: string[];
   details: DetailGroup[];
+  slug: string;
 };
 
 const stays: Stay[] = [
