@@ -538,20 +538,21 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="relative my-auto w-full max-w-3xl overflow-hidden rounded-3xl border border-resin-800 bg-[color:var(--color-surface)]"
+        className="relative my-auto flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-resin-800 bg-[color:var(--color-surface)]"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-200 hover:border-teal hover:text-teal"
+          className="absolute right-4 top-4 z-20 grid h-9 w-9 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-200 hover:border-teal hover:text-teal"
           aria-label="Закрыть"
         >
           ✕
         </button>
 
         {/* Gallery */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden">
+        <div className="relative aspect-[16/8] w-full shrink-0 overflow-hidden">
+
           {hasImages ? (
             <img
               src={slides[active]}
@@ -586,57 +587,57 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
           )}
         </div>
 
-        <div className="flex flex-col gap-6 p-6 md:p-8">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-5 md:p-6">
           {/* Chips */}
           {topChips.length > 0 && (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
               {topChips.map((c) => (
-                <div key={c.label} className="flex items-center gap-3 rounded-2xl border border-resin-800 bg-resin-950/40 p-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-teal/10 text-teal">
+                <div key={c.label} className="flex items-center gap-2 rounded-xl border border-resin-800 bg-resin-950/40 p-2">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-teal/10 text-teal">
                     <ChipIcon kind={c.icon} />
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-[13px] font-semibold text-resin-50">{c.label}</p>
-                    <p className="truncate text-[11px] text-resin-200/60">{c.sub}</p>
+                    <p className="truncate text-[12px] font-semibold text-resin-50">{c.label}</p>
+                    <p className="truncate text-[10px] text-resin-200/60">{c.sub}</p>
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Title */}
-          <div>
-            <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-resin-200/50">
-              {stay.kind === "cottage" ? "Отдельный коттедж" : "Блок таунхауса №3"}
-            </p>
-            <h3 className="font-serif text-4xl leading-tight text-resin-50 md:text-5xl">{stay.name}</h3>
-            <p className="mt-3 text-sm font-medium text-teal">{stay.tagline}</p>
-            <p className="mt-2 text-sm leading-relaxed text-resin-200/75">{stay.description}</p>
+          {/* Title + price */}
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div className="min-w-0">
+              <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.25em] text-resin-200/50">
+                {stay.kind === "cottage" ? "Отдельный коттедж" : "Блок таунхауса №3"}
+              </p>
+              <h3 className="font-serif text-2xl leading-tight text-resin-50 md:text-3xl">{stay.name}</h3>
+              <p className="mt-1 text-[13px] font-medium text-teal">{stay.tagline}</p>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <p className="font-mono text-2xl font-semibold tabular-nums text-teal">
+                {formatPrice(stay.price)}
+              </p>
+              <p className="text-xs text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</p>
+            </div>
           </div>
-
-          {/* Price */}
-          <div className="flex items-baseline gap-3">
-            <p className="font-mono text-3xl font-semibold tabular-nums text-teal">
-              {formatPrice(stay.price)}
-            </p>
-            <p className="text-sm text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</p>
-          </div>
+          <p className="text-[13px] leading-relaxed text-resin-200/75">{stay.description}</p>
 
           {/* Included */}
-          <div className="border-t border-resin-800 pt-6">
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-resin-200/50">
+          <div className="border-t border-resin-800 pt-4">
+            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.25em] text-resin-200/50">
               Включено в {stay.kind === "townhouse" ? "блок" : "коттедж"}
             </p>
-            <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
               {stay.details.map((d) => (
                 <div key={d.title}>
-                  <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-resin-50">
-                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-teal/10 text-teal">
+                  <p className="mb-1.5 flex items-center gap-2 text-[13px] font-semibold text-resin-50">
+                    <span className="grid h-6 w-6 place-items-center rounded-md bg-teal/10 text-teal">
                       <DetailIcon kind={d.group} />
                     </span>
                     {d.title}
                   </p>
-                  <ul className="space-y-1 text-[13px] text-resin-200/80">
+                  <ul className="space-y-0.5 text-[12px] text-resin-200/80">
                     {d.items.map((it) => (
                       <li key={it} className="flex gap-2">
                         <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
@@ -650,26 +651,27 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-2 pt-1">
             <a
               href="#request"
               onClick={onClose}
-              className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
+              className="inline-flex items-center gap-2 rounded-full bg-teal px-5 py-2.5 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
             >
               Забронировать
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center gap-2 rounded-full border border-resin-200/25 px-6 py-3 text-sm text-resin-50 transition-colors hover:border-teal hover:text-teal"
+              className="inline-flex items-center gap-2 rounded-full border border-resin-200/25 px-5 py-2.5 text-sm text-resin-50 transition-colors hover:border-teal hover:text-teal"
             >
               Закрыть
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );
