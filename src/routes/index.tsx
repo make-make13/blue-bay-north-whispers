@@ -661,6 +661,30 @@ const GAZEBO_CARDS: {
   { title: "Общая беседка", body: "Доступна по предварительному запросу.", icon: "people" },
 ];
 
+function DetailIcon({ kind }: { kind: "beds" | "bath" | "kitchen" | "media" | "outdoor" }) {
+  const s = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true } as const;
+  const stroke = { stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+  if (kind === "beds")
+    return (
+      <svg {...s}><path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7" {...stroke} /><path d="M3 15h18M3 20v-2M21 20v-2" {...stroke} /><path d="M7 9V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" {...stroke} /></svg>
+    );
+  if (kind === "bath")
+    return (
+      <svg {...s}><path d="M4 11h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3z" {...stroke} /><path d="M7 11V6a2 2 0 0 1 2-2h1M6 20l-1 1M18 20l1 1" {...stroke} /></svg>
+    );
+  if (kind === "kitchen")
+    return (
+      <svg {...s}><path d="M4 4h16v6H4zM4 10v10M20 10v10M8 14h8M8 17h5" {...stroke} /></svg>
+    );
+  if (kind === "media")
+    return (
+      <svg {...s}><rect x="3" y="5" width="18" height="12" rx="2" {...stroke} /><path d="M8 21h8M12 17v4" {...stroke} /></svg>
+    );
+  return (
+    <svg {...s}><path d="M12 3l3 4h-2v4h4l3 4h-2v6H6v-6H4l3-4h4V7H9l3-4z" {...stroke} /></svg>
+  );
+}
+
 function GazeboIcon({ kind }: { kind: "house" | "house2" | "crown" | "people" }) {
   const cls = "h-5 w-5";
   if (kind === "crown")
