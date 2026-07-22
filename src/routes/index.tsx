@@ -513,65 +513,130 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
   const [active, setActive] = useState(0);
   const slides = pics(stay.slug);
   const hasImages = slides.length > 0;
+  const total = Math.max(slides.length, 1);
+  const go = (dir: -1 | 1) => setActive((i) => (i + dir + total) % total);
+
+  const bedsGroup = stay.details.find((d) => d.group === "beds");
+  const outdoorGroup = stay.details.find((d) => d.group === "outdoor");
+  const allItems = stay.details.flatMap((d) => d.items.map((it) => it.toLowerCase()));
+  const has = (kw: string) => allItems.some((it) => it.includes(kw));
+
+  type Chip = { label: string; sub: string; icon: "guests" | "bed" | "sauna" | "grill" | "fire" | "gazebo" };
+  const chips: Chip[] = [
+    { label: `До ${stay.capacity} гостей`, sub: "вместимость", icon: "guests" },
+  ];
+  if (bedsGroup?.items[0]) chips.push({ label: bedsGroup.items[0], sub: "спальные места", icon: "bed" });
+  if (has("сауна") || has("баня")) chips.push({ label: "Сауна", sub: stay.kind === "townhouse" ? "в блоке" : "в коттедже", icon: "sauna" });
+  else if (has("камин")) chips.push({ label: "Камин", sub: "в зале", icon: "fire" });
+  if (has("мангал")) chips.push({ label: "Мангал", sub: "на улице", icon: "grill" });
+  else if (has("беседк")) chips.push({ label: "Беседка", sub: "рядом", icon: "gazebo" });
+  const topChips = chips.slice(0, 4);
+
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-resin-950/85 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 grid place-items-start overflow-y-auto bg-resin-950/85 p-4 backdrop-blur-sm md:place-items-center"
       onClick={onClose}
     >
       <div
-        className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-3xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-10"
+        className="relative my-auto w-full max-w-3xl overflow-hidden rounded-3xl border border-resin-800 bg-[color:var(--color-surface)]"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-5 top-5 z-10 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-200 hover:border-teal hover:text-teal"
+          className="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-200 hover:border-teal hover:text-teal"
           aria-label="Закрыть"
         >
           ✕
         </button>
 
-        <div className="grid gap-8 md:grid-cols-[1fr_1.15fr]">
-          {/* Left: info */}
-          <div className="flex flex-col gap-6">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 py-1.5 text-xs font-medium text-teal">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <circle cx="9" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.7" />
-                  <circle cx="16" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.7" />
-                  <path d="M3.5 18c.6-2.4 2.8-4 5.5-4s4.9 1.6 5.5 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-                  <path d="M14.5 17c.5-1.8 2-3 4-3s3.5 1.2 4 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-                </svg>
-                До {stay.capacity} гостей
-              </span>
+        {/* Gallery */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden">
+          {hasImages ? (
+            <img
+              src={slides[active]}
+              alt={`${stay.name} — фото ${active + 1}`}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <Placeholder label={stay.name} className="absolute inset-0" />
+          )}
+          <span className="absolute bottom-4 left-4 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200 backdrop-blur">
+            {Math.min(active + 1, total)} / {total}
+          </span>
+          {slides.length > 1 && (
+            <div className="absolute bottom-4 right-4 flex gap-2">
+              <button
+                type="button"
+                onClick={() => go(-1)}
+                className="grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-100 hover:border-teal hover:text-teal"
+                aria-label="Предыдущее"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => go(1)}
+                className="grid h-10 w-10 place-items-center rounded-full border border-resin-800 bg-resin-950/80 text-resin-100 hover:border-teal hover:text-teal"
+                aria-label="Следующее"
+              >
+                ›
+              </button>
             </div>
+          )}
+        </div>
 
-            <div>
-              <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-resin-200/50">
-                {stay.kind === "cottage" ? "Отдельный коттедж" : "Блок таунхауса №3"}
-              </p>
-              <h3 className="font-serif text-4xl leading-tight text-resin-50 md:text-5xl">{stay.name}</h3>
-              <p className="mt-3 text-sm font-medium text-teal">{stay.tagline}</p>
-              <p className="mt-2 text-sm leading-relaxed text-resin-200/75">{stay.description}</p>
+        <div className="flex flex-col gap-6 p-6 md:p-8">
+          {/* Chips */}
+          {topChips.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+              {topChips.map((c) => (
+                <div key={c.label} className="flex items-center gap-3 rounded-2xl border border-resin-800 bg-resin-950/40 p-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-teal/10 text-teal">
+                    <ChipIcon kind={c.icon} />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-[13px] font-semibold text-resin-50">{c.label}</p>
+                    <p className="truncate text-[11px] text-resin-200/60">{c.sub}</p>
+                  </div>
+                </div>
+              ))}
             </div>
+          )}
 
-            <div className="flex items-baseline gap-3">
-              <p className="font-mono text-3xl font-semibold tabular-nums text-teal">
-                {formatPrice(stay.price)}
-              </p>
-              <p className="text-sm text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</p>
-            </div>
+          {/* Title */}
+          <div>
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-resin-200/50">
+              {stay.kind === "cottage" ? "Отдельный коттедж" : "Блок таунхауса №3"}
+            </p>
+            <h3 className="font-serif text-4xl leading-tight text-resin-50 md:text-5xl">{stay.name}</h3>
+            <p className="mt-3 text-sm font-medium text-teal">{stay.tagline}</p>
+            <p className="mt-2 text-sm leading-relaxed text-resin-200/75">{stay.description}</p>
+          </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+          {/* Price */}
+          <div className="flex items-baseline gap-3">
+            <p className="font-mono text-3xl font-semibold tabular-nums text-teal">
+              {formatPrice(stay.price)}
+            </p>
+            <p className="text-sm text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</p>
+          </div>
+
+          {/* Included */}
+          <div className="border-t border-resin-800 pt-6">
+            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-resin-200/50">
+              Включено в {stay.kind === "townhouse" ? "блок" : "коттедж"}
+            </p>
+            <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2 md:grid-cols-3">
               {stay.details.map((d) => (
-                <div key={d.title} className="rounded-2xl border border-resin-800 bg-resin-950/40 p-4">
+                <div key={d.title}>
                   <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-resin-50">
                     <span className="grid h-7 w-7 place-items-center rounded-lg bg-teal/10 text-teal">
                       <DetailIcon kind={d.group} />
                     </span>
                     {d.title}
                   </p>
-                  <ul className="space-y-1.5 text-[13px] text-resin-200/80">
+                  <ul className="space-y-1 text-[13px] text-resin-200/80">
                     {d.items.map((it) => (
                       <li key={it} className="flex gap-2">
                         <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
@@ -582,81 +647,59 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
                 </div>
               ))}
             </div>
-
-            {stay.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {stay.tags.map((t) => (
-                  <span key={t} className="rounded-full border border-resin-800 px-3 py-1 text-[11px] text-resin-200/70">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <div className="mt-auto flex flex-wrap gap-3 pt-2">
-              <a
-                href="#request"
-                onClick={onClose}
-                className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
-              >
-                Забронировать
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-              <button
-                type="button"
-                onClick={onClose}
-                className="inline-flex items-center gap-2 rounded-full border border-resin-200/25 px-6 py-3 text-sm text-resin-50 transition-colors hover:border-teal hover:text-teal"
-              >
-                Закрыть
-              </button>
-            </div>
           </div>
 
-          {/* Right: gallery */}
-          <div className="flex gap-3">
-            <div className="relative flex-1 overflow-hidden rounded-2xl border border-resin-800">
-              {hasImages ? (
-                <img src={slides[active]} alt={`${stay.name} — фото ${active + 1}`} className="absolute inset-0 h-full w-full object-cover" />
-              ) : (
-                <Placeholder label={stay.name} className="absolute inset-0" />
-              )}
-              <span className="absolute bottom-3 left-3 rounded-full bg-resin-950/80 px-3 py-1 font-mono text-[11px] tabular-nums text-resin-200 backdrop-blur">
-                {Math.min(active + 1, Math.max(slides.length, 1))} / {Math.max(slides.length, 1)}
-              </span>
-            </div>
-            <div className="flex w-20 flex-col gap-2 md:w-24">
-              {(hasImages ? slides.slice(0, 5) : [0,1,2,3,4]).map((src, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setActive(i)}
-                  className={`relative aspect-square overflow-hidden rounded-xl border transition-colors ${
-                    active === i ? "border-teal ring-2 ring-teal/40" : "border-resin-800 hover:border-resin-200/40"
-                  }`}
-                  aria-label={`Фото ${i + 1}`}
-                >
-                  {hasImages ? (
-                    <img src={src as string} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-                  ) : (
-                    <Placeholder label="" className="absolute inset-0" />
-                  )}
-                </button>
-              ))}
-              {slides.length > 5 && (
-                <div className="grid aspect-square place-items-center rounded-xl border border-resin-800 bg-resin-950/60 text-center">
-                  <div>
-                    <p className="font-mono text-sm font-semibold text-resin-50">+{slides.length - 5}</p>
-                    <p className="text-[10px] text-resin-200/60">фото</p>
-                  </div>
-                </div>
-              )}
-            </div>
+          {/* Actions */}
+          <div className="flex flex-wrap gap-3 pt-2">
+            <a
+              href="#request"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
+            >
+              Забронировать
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full border border-resin-200/25 px-6 py-3 text-sm text-resin-50 transition-colors hover:border-teal hover:text-teal"
+            >
+              Закрыть
+            </button>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function ChipIcon({ kind }: { kind: "guests" | "bed" | "sauna" | "grill" | "fire" | "gazebo" }) {
+  const s = { width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true } as const;
+  const st = { stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+  if (kind === "guests")
+    return (
+      <svg {...s}><circle cx="9" cy="8" r="3.2" {...st} /><circle cx="16" cy="9" r="2.4" {...st} /><path d="M3.5 18c.6-2.4 2.8-4 5.5-4s4.9 1.6 5.5 4M14.5 17c.5-1.8 2-3 4-3s3.5 1.2 4 3" {...st} /></svg>
+    );
+  if (kind === "bed")
+    return (
+      <svg {...s}><path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7M3 15h18M3 20v-2M21 20v-2M7 9V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" {...st} /></svg>
+    );
+  if (kind === "sauna")
+    return (
+      <svg {...s}><path d="M6 20c0-3 2-4 2-6s-2-3-2-5M12 20c0-3 2-4 2-6s-2-3-2-5M18 20c0-3 2-4 2-6s-2-3-2-5" {...st} /></svg>
+    );
+  if (kind === "grill")
+    return (
+      <svg {...s}><path d="M4 8h16l-2 6a5 5 0 0 1-5 4h-2a5 5 0 0 1-5-4L4 8zM9 18l-1 3M15 18l1 3M9 5c0-1 1-1 1-2M13 5c0-1 1-1 1-2" {...st} /></svg>
+    );
+  if (kind === "fire")
+    return (
+      <svg {...s}><path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-5M12 21a5 5 0 0 0 5-5c0-2-1-3-2-4-.5 1.5-1 2-2 2 0-2-1-3-1-5" {...st} /></svg>
+    );
+  return (
+    <svg {...s}><path d="M4 11l8-7 8 7M6 11v9h12v-9M10 20v-5h4v5" {...st} /></svg>
   );
 }
 
