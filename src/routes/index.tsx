@@ -24,6 +24,12 @@ export const Route = createFileRoute("/")({
 
 /* ---------- Data (строго из брифа) ---------- */
 
+type DetailGroup = {
+  group: "beds" | "bath" | "kitchen" | "media" | "outdoor";
+  title: string;
+  items: string[];
+};
+
 type Stay = {
   id: string;
   code: string;
@@ -31,8 +37,12 @@ type Stay = {
   name: string;
   capacity: number;
   price: number;
+  priceUnit?: string;
+  tagline: string;
+  description: string;
   bullets: string[];
   tags: string[];
+  details: DetailGroup[];
 };
 
 const stays: Stay[] = [
@@ -43,6 +53,9 @@ const stays: Stay[] = [
     name: "Коттедж №1",
     capacity: 12,
     price: 22000,
+    tagline: "Для праздников и больших компаний",
+    description:
+      "Каминный зал, шесть спален и просторная атмосфера для тёплого отдыха за городом.",
     bullets: [
       "6 спален · 2 двуспальные + 8 односпальных",
       "2 душевые, 2 санузла",
@@ -50,6 +63,13 @@ const stays: Stay[] = [
       "Кухня: варочная панель, холодильник, СВЧ, ПМ",
     ],
     tags: ["для компании", "камин", "беседка"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["6 спален", "2 двуспальные кровати", "8 односпальных кроватей"] },
+      { group: "bath", title: "Санузлы", items: ["2 душевые", "2 туалета"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Чайник", "Посудомоечная машина"] },
+      { group: "media", title: "Медиа и комфорт", items: ["ЖК-телевизор", "Музыкальный центр", "Каминный зал"] },
+      { group: "outdoor", title: "На улице", items: ["Беседка", "Мангал"] },
+    ],
   },
   {
     id: "c2",
@@ -58,6 +78,9 @@ const stays: Stay[] = [
     name: "Коттедж №2",
     capacity: 10,
     price: 21000,
+    tagline: "Для семьи и отдыха с друзьями",
+    description:
+      "Пять спален, гостиная и уютная планировка для спокойных выходных с близкими.",
     bullets: [
       "5 комнат · по 2 односпальные кровати",
       "2 душевые, 2 санузла",
@@ -65,6 +88,13 @@ const stays: Stay[] = [
       "Кухня: холодильник, СВЧ, чайник",
     ],
     tags: ["для компании", "беседка"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["5 спальных комнат", "В каждой спальне по 2 односпальные кровати"] },
+      { group: "bath", title: "Санузлы", items: ["2 душевые", "2 санузла"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Кухня", "Холодильник", "СВЧ-печь", "Чайник"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Телевизор", "Гостиная"] },
+      { group: "outdoor", title: "На улице", items: ["Беседка", "Мангал"] },
+    ],
   },
   {
     id: "c6",
@@ -73,6 +103,9 @@ const stays: Stay[] = [
     name: "Коттедж №6",
     capacity: 2,
     price: 12000,
+    tagline: "Для пары или небольшой семьи",
+    description:
+      "Отдельная спальня и дополнительное место — удобный вариант для пары или семьи.",
     bullets: [
       "Отдельная спальня, двуспальная кровать",
       "Душевая",
@@ -80,6 +113,13 @@ const stays: Stay[] = [
       "Фен, мангал",
     ],
     tags: ["для двоих"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["Отдельная спальня с двуспальной кроватью", "Кухонная зона с диванами", "Диваны трансформируются в дополнительное двуспальное место"] },
+      { group: "bath", title: "Санузлы", items: ["Душевая"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Мини-холодильник", "Варочная панель", "СВЧ-печь", "Электрочайник", "Посуда"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Фен", "Шкаф", "Вешалка для верхней одежды"] },
+      { group: "outdoor", title: "На улице", items: ["Мангал"] },
+    ],
   },
   {
     id: "c5",
@@ -88,6 +128,9 @@ const stays: Stay[] = [
     name: "Коттедж №5",
     capacity: 2,
     price: 8000,
+    tagline: "Компактный домик для двоих",
+    description:
+      "Мини-коттедж с кроватью, кухонной зоной и душевой для спокойного отдыха вдвоём.",
     bullets: [
       "Двуспальная кровать",
       "Душевая",
@@ -95,6 +138,13 @@ const stays: Stay[] = [
       "Мангал",
     ],
     tags: ["для двоих", "компактный"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["Двуспальная кровать"] },
+      { group: "bath", title: "Санузлы", items: ["Душевая"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Кухонная зона", "Мини-холодильник", "СВЧ-печь", "Чайник", "Посуда"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Шкаф", "Вешалка для верхней одежды", "Обувница"] },
+      { group: "outdoor", title: "На улице", items: ["Мангал"] },
+    ],
   },
   {
     id: "t3-vip",
@@ -103,6 +153,9 @@ const stays: Stay[] = [
     name: "VIP-блок таунхауса №3",
     capacity: 6,
     price: 26000,
+    tagline: "Премиальный отдых с беседкой",
+    description:
+      "Сауна, электрокамин и просторные комнаты создают самый уютный формат отдыха в таунхаусе.",
     bullets: [
       "3 комнаты · 1 двуспальная + 4 односпальные",
       "2 душевые, 2 санузла",
@@ -110,6 +163,13 @@ const stays: Stay[] = [
       "Отдельная беседка, мангал, Xbox One",
     ],
     tags: ["VIP", "сауна", "беседка"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["3 спальные комнаты", "1 двуспальная кровать", "4 односпальные кровати"] },
+      { group: "bath", title: "Санузлы", items: ["2 душевые", "2 санузла"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Термопот", "Посудомоечная машина", "Сушильный шкаф для одежды"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Электрическая сауна", "Электрический камин", "2 телевизора", "Музыкальный центр", "Приставка Xbox One"] },
+      { group: "outdoor", title: "На улице", items: ["Отдельная беседка", "Мангал"] },
+    ],
   },
   {
     id: "t3-2",
@@ -118,6 +178,9 @@ const stays: Stay[] = [
     name: "Блок таунхауса №3/2",
     capacity: 6,
     price: 22000,
+    tagline: "Двухэтажный комфорт с сауной",
+    description:
+      "Просторный двухэтажный блок с отдельными спальными местами, сауной и двумя душевыми.",
     bullets: [
       "3 комнаты · 6 односпальных кроватей",
       "2 душевые, 2 санузла",
@@ -125,6 +188,13 @@ const stays: Stay[] = [
       "Кресло-качалка, мангал",
     ],
     tags: ["сауна", "отдельный вход"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["3 спальные комнаты", "6 односпальных кроватей"] },
+      { group: "bath", title: "Санузлы", items: ["2 душевые", "2 санузла"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Чайник", "Посудомоечная машина", "Сушильный шкаф для одежды"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Электрическая сауна", "ЖК-телевизор", "Музыкальный центр", "Кресло-качалка"] },
+      { group: "outdoor", title: "На улице", items: ["Мангал"] },
+    ],
   },
   {
     id: "t3-3",
@@ -133,6 +203,10 @@ const stays: Stay[] = [
     name: "Блок таунхауса №3/3",
     capacity: 6,
     price: 19000,
+    priceUnit: "/ блок / сутки",
+    tagline: "Уютный блок с собственной сауной",
+    description:
+      "Три спальни, просторный зал и сауна — удобный формат отдыха для небольшой компании.",
     bullets: [
       "3 комнаты · 6 односпальных кроватей",
       "2 душевые, 2 санузла",
@@ -140,6 +214,13 @@ const stays: Stay[] = [
       "Мангал",
     ],
     tags: ["сауна"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["3 спальные комнаты", "В блоке №3/3 — все кровати односпальные"] },
+      { group: "bath", title: "Санузлы", items: ["2 душевые", "2 санузла"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Чайник", "Посудомоечная машина", "Сушильный шкаф для одежды"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Электрическая сауна", "ЖК-телевизор", "Музыкальный центр"] },
+      { group: "outdoor", title: "На улице", items: ["Мангал"] },
+    ],
   },
   {
     id: "t3-4",
@@ -148,6 +229,10 @@ const stays: Stay[] = [
     name: "Блок таунхауса №3/4",
     capacity: 6,
     price: 19000,
+    priceUnit: "/ блок / сутки",
+    tagline: "Уютный блок с собственной сауной",
+    description:
+      "Три спальни, просторный зал и сауна — удобный формат отдыха для небольшой компании.",
     bullets: [
       "3 комнаты · 1 двуспальная + 4 односпальные",
       "2 душевые, 2 санузла",
@@ -155,6 +240,13 @@ const stays: Stay[] = [
       "Мангал",
     ],
     tags: ["сауна"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["3 спальные комнаты", "1 двуспальная кровать и 4 односпальные кровати"] },
+      { group: "bath", title: "Санузлы", items: ["2 душевые", "2 санузла"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Чайник", "Посудомоечная машина", "Сушильный шкаф для одежды"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Электрическая сауна", "ЖК-телевизор", "Музыкальный центр"] },
+      { group: "outdoor", title: "На улице", items: ["Мангал"] },
+    ],
   },
   {
     id: "t3-5",
@@ -163,6 +255,10 @@ const stays: Stay[] = [
     name: "Блок таунхауса №3/5",
     capacity: 6,
     price: 19000,
+    priceUnit: "/ блок / сутки",
+    tagline: "Уютный блок с собственной сауной",
+    description:
+      "Три спальни, просторный зал и сауна — удобный формат отдыха для небольшой компании.",
     bullets: [
       "3 комнаты · 1 двуспальная + 4 односпальные",
       "2 душевые, 2 санузла",
@@ -170,6 +266,13 @@ const stays: Stay[] = [
       "Мангал",
     ],
     tags: ["сауна"],
+    details: [
+      { group: "beds", title: "Спальные места", items: ["3 спальные комнаты", "1 двуспальная кровать и 4 односпальные кровати"] },
+      { group: "bath", title: "Санузлы", items: ["2 душевые", "2 санузла"] },
+      { group: "kitchen", title: "Кухня и техника", items: ["Варочная панель", "Холодильник", "СВЧ-печь", "Чайник", "Посудомоечная машина", "Сушильный шкаф для одежды"] },
+      { group: "media", title: "Медиа и комфорт", items: ["Электрическая сауна", "ЖК-телевизор", "Музыкальный центр"] },
+      { group: "outdoor", title: "На улице", items: ["Мангал"] },
+    ],
   },
 ];
 
@@ -437,33 +540,36 @@ function StayModal({ stay, onClose }: { stay: Stay; onClose: () => void }) {
                 {stay.kind === "cottage" ? "Отдельный коттедж" : "Блок таунхауса №3"}
               </p>
               <h3 className="font-serif text-4xl leading-tight text-resin-50 md:text-5xl">{stay.name}</h3>
+              <p className="mt-3 text-sm font-medium text-teal">{stay.tagline}</p>
+              <p className="mt-2 text-sm leading-relaxed text-resin-200/75">{stay.description}</p>
             </div>
 
-            <div>
+            <div className="flex items-baseline gap-3">
               <p className="font-mono text-3xl font-semibold tabular-nums text-teal">
                 {formatPrice(stay.price)}
               </p>
-              <p className="mt-1 text-sm text-resin-200/60">за сутки</p>
+              <p className="text-sm text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</p>
             </div>
 
-            <div className="rounded-2xl border border-resin-800 bg-resin-950/40 p-5">
-              <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-resin-50">
-                <span className="grid h-8 w-8 place-items-center rounded-lg bg-teal/10 text-teal">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M3 12l9-7 9 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M5 10v9h14v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                Что внутри
-              </p>
-              <ul className="space-y-2 text-sm text-resin-200/85">
-                {stay.bullets.map((b) => (
-                  <li key={b} className="flex gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-teal" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {stay.details.map((d) => (
+                <div key={d.title} className="rounded-2xl border border-resin-800 bg-resin-950/40 p-4">
+                  <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-resin-50">
+                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-teal/10 text-teal">
+                      <DetailIcon kind={d.group} />
+                    </span>
+                    {d.title}
+                  </p>
+                  <ul className="space-y-1.5 text-[13px] text-resin-200/80">
+                    {d.items.map((it) => (
+                      <li key={it} className="flex gap-2">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
+                        <span>{it}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
 
             {stay.tags.length > 0 && (
@@ -554,6 +660,30 @@ const GAZEBO_CARDS: {
   { title: "Беседка VIP*", body: "Закреплена за VIP-блоком №3.", icon: "crown" },
   { title: "Общая беседка", body: "Доступна по предварительному запросу.", icon: "people" },
 ];
+
+function DetailIcon({ kind }: { kind: "beds" | "bath" | "kitchen" | "media" | "outdoor" }) {
+  const s = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true } as const;
+  const stroke = { stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+  if (kind === "beds")
+    return (
+      <svg {...s}><path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7" {...stroke} /><path d="M3 15h18M3 20v-2M21 20v-2" {...stroke} /><path d="M7 9V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" {...stroke} /></svg>
+    );
+  if (kind === "bath")
+    return (
+      <svg {...s}><path d="M4 11h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3z" {...stroke} /><path d="M7 11V6a2 2 0 0 1 2-2h1M6 20l-1 1M18 20l1 1" {...stroke} /></svg>
+    );
+  if (kind === "kitchen")
+    return (
+      <svg {...s}><path d="M4 4h16v6H4zM4 10v10M20 10v10M8 14h8M8 17h5" {...stroke} /></svg>
+    );
+  if (kind === "media")
+    return (
+      <svg {...s}><rect x="3" y="5" width="18" height="12" rx="2" {...stroke} /><path d="M8 21h8M12 17v4" {...stroke} /></svg>
+    );
+  return (
+    <svg {...s}><path d="M12 3l3 4h-2v4h4l3 4h-2v6H6v-6H4l3-4h4V7H9l3-4z" {...stroke} /></svg>
+  );
+}
 
 function GazeboIcon({ kind }: { kind: "house" | "house2" | "crown" | "people" }) {
   const cls = "h-5 w-5";
