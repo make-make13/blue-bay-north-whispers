@@ -811,7 +811,7 @@ function GazeboSection() {
                 <button
                   key={c.title}
                   type="button"
-                  onClick={() => setActive(i)}
+                  onClick={() => selectCard(i)}
                   className={`group relative flex flex-col items-start gap-3 rounded-2xl border p-5 text-left transition-colors ${
                     isActive
                       ? "border-teal bg-teal/5"
