@@ -149,58 +149,48 @@ export const mockAuth = {
   },
 };
 
-// ---- Generic CRUD factory ----
+// Generic CRUD factory. Uses `any` internally to keep the mock small; the
+// public typed surface lives in src/lib/api/index.ts.
 function makeCrud<K extends keyof DB>(key: K) {
-  type T = DB[K] extends Array<infer U> ? U : never;
+  type T = any;
+  const read = (): T[] => load()[key] as unknown as T[];
+  const write = (next: T[]) => {
+    const db = load();
+    (db[key] as unknown as T[]) = next;
+    save(db);
+  };
   return {
     async list(params?: ListParams): Promise<T[]> {
-      const db = load();
-      let items = db[key] as unknown as T[];
-      if (params?.category) {
-        items = items.filter((i) => (i as any).category === params.category);
-      }
-      if (params?.published !== undefined) {
-        items = items.filter((i) => (i as any).published === params.published);
-      }
-      return delay(sortByOrder(items as any));
+      let items = read();
+      if (params?.category) items = items.filter((i) => i.category === params.category);
+      if (params?.published !== undefined)
+        items = items.filter((i) => i.published === params.published);
+      return delay(sortByOrder(items));
     },
     async get(id: string): Promise<T | null> {
-      const db = load();
-      const items = db[key] as unknown as T[];
-      return delay((items.find((i) => (i as any).id === id) ?? null) as T | null);
+      return delay(read().find((i) => i.id === id) ?? null);
     },
     async create(input: Omit<T, "id">): Promise<T> {
-      const db = load();
-      const items = db[key] as unknown as T[];
-      const item = { ...(input as any), id: uid() } as T;
-      (db[key] as unknown as T[]) = [...items, item];
-      save(db);
+      const item = { ...(input as object), id: uid() } as T;
+      write([...read(), item]);
       return delay(item);
     },
     async update(id: string, patch: Partial<T>): Promise<T> {
-      const db = load();
-      const items = db[key] as unknown as T[];
-      const next = items.map((i) => ((i as any).id === id ? { ...i, ...patch } : i));
-      (db[key] as unknown as T[]) = next;
-      save(db);
-      return delay(next.find((i) => (i as any).id === id) as T);
+      const next = read().map((i) => (i.id === id ? { ...i, ...patch } : i));
+      write(next);
+      return delay(next.find((i) => i.id === id));
     },
     async remove(id: string): Promise<void> {
-      const db = load();
-      const items = db[key] as unknown as T[];
-      (db[key] as unknown as T[]) = items.filter((i) => (i as any).id !== id);
-      save(db);
+      write(read().filter((i) => i.id !== id));
       return delay(undefined);
     },
     async reorder(orderedIds: string[]): Promise<void> {
-      const db = load();
-      const items = db[key] as unknown as T[];
-      const next = items.map((i) => {
-        const idx = orderedIds.indexOf((i as any).id);
-        return idx >= 0 ? { ...i, sortOrder: idx + 1 } : i;
-      });
-      (db[key] as unknown as T[]) = next;
-      save(db);
+      write(
+        read().map((i) => {
+          const idx = orderedIds.indexOf(i.id);
+          return idx >= 0 ? { ...i, sortOrder: idx + 1 } : i;
+        }),
+      );
       return delay(undefined);
     },
   };
