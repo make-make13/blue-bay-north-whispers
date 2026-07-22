@@ -458,20 +458,13 @@ function StayCard({ stay }: { stay: Stay }) {
               до {stay.capacity} гостей
             </span>
           </header>
-          <ul className="space-y-1.5 text-sm text-resin-200/75">
-            {stay.bullets.map((b) => (
-              <li key={b} className="flex gap-2">
-                <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-teal/70" />
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
-            {stay.tags.map((t) => (
-              <span key={t} className="rounded-full border border-resin-800 px-2.5 py-0.5 text-[11px] text-resin-200/60">
-                {t}
-              </span>
-            ))}
+          <p className="text-sm font-medium text-teal">{stay.tagline}</p>
+          <p className="text-sm leading-relaxed text-resin-200/75">{stay.description}</p>
+          <div className="mt-auto flex items-baseline gap-2 pt-2">
+            <span className="font-mono text-xl font-semibold tabular-nums text-resin-50">
+              {formatPrice(stay.price)}
+            </span>
+            <span className="text-xs text-resin-200/60">{stay.priceUnit ?? "/ сутки"}</span>
           </div>
           <div className="mt-2 flex gap-2">
             <a
