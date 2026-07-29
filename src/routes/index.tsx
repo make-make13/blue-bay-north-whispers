@@ -1611,7 +1611,7 @@ function TransferSection() {
                     <circle cx="4" cy="12" r="1.5" />
                   </svg>
                 </span>
-                <p className="text-base font-medium text-resin-50">Мурманск — Териберка</p>
+                <p className="text-base font-medium text-resin-50">{content.transfer.teriberkaTitle}</p>
               </div>
               <div className="mb-2 flex items-baseline justify-between border-b border-resin-800 pb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-resin-200/50">
                 <span>Маршрут</span>
@@ -1634,8 +1634,8 @@ function TransferSection() {
                 <circle cx="12" cy="12" r="9" /><path d="M12 8v.01M11 12h1v4h1" />
               </svg>
               <div className="space-y-1">
-                <p><span className="text-resin-50">Дополнительное ожидание</span> — 600 ₽ за час.</p>
-                <p>Точную стоимость по вашему направлению уточним при подтверждении заявки.</p>
+                <p><span className="text-resin-50">{content.transfer.waitLabel}</span> — {content.transfer.waitPrice} за час.</p>
+                <p>{content.transfer.waitNote}</p>
               </div>
             </div>
           </div>
