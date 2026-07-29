@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import logoAsset from "@/assets/golubaya-buhta-logo.webp.asset.json";
 import heroAsset from "@/assets/hero-gb-cottages.webp.asset.json";
 import galleryData from "@/assets/gallery.json";
+import { SiteContentProvider, useSiteContent } from "@/lib/site-content-context";
 
 const gallery = galleryData as Record<string, string[]>;
 const pics = (slug: string): string[] => gallery[slug] ?? [];
@@ -350,19 +351,21 @@ function formatPrice(n: number) {
 
 function Index() {
   return (
-    <div className="min-h-screen bg-resin-950 text-resin-200 selection:bg-teal/30 selection:text-resin-50">
-      <TopBar />
-      <main>
-        <Hero />
-        <StaysSection />
-        <GazeboSection />
-        <ActivitiesSection />
-        <TransferSection />
-        <TrustSection />
-        <RequestSection />
-      </main>
-      <SiteFooter />
-    </div>
+    <SiteContentProvider>
+      <div className="min-h-screen bg-resin-950 text-resin-200 selection:bg-teal/30 selection:text-resin-50">
+        <TopBar />
+        <main>
+          <Hero />
+          <StaysSection />
+          <GazeboSection />
+          <ActivitiesSection />
+          <TransferSection />
+          <TrustSection />
+          <RequestSection />
+        </main>
+        <SiteFooter />
+      </div>
+    </SiteContentProvider>
   );
 }
 
