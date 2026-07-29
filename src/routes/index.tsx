@@ -1426,6 +1426,18 @@ function TransferIcon({ kind }: { kind: "seats" | "luggage" | "comfort" }) {
 }
 
 function TransferSection() {
+  const content = useSiteContent();
+  const s = content.sections.transfer;
+  const TRANSFER_GALLERY = pics(content.transfer.gallerySlug);
+  const ROUTE_CARDS = content.transfer.routeGroups.map((g) => ({
+    title: g.title,
+    column: g.column,
+    icon: g.icon,
+    routes: g.routes.map((r) => [r.label, r.price] as [string, string]),
+  }));
+  const TERIBERKA_ROUTES = content.transfer.teriberka.map(
+    (t) => [t.label, t.price] as [string, string],
+  );
   const [slide, setSlide] = useState(0);
   const [routesOpen, setRoutesOpen] = useState(false);
   const total = TRANSFER_GALLERY.length;
@@ -1433,9 +1445,9 @@ function TransferSection() {
   return (
     <Section
       id="transfer"
-      eyebrow="Логистика"
-      title="Комфортный трансфер на микроавтобусе"
-      lede="Citroen SpaceTourer на 7 мест. Встречаем в аэропорту и на вокзале Мурманска, возим в город и Териберку."
+      eyebrow={s.eyebrow}
+      title={s.title}
+      lede={s.lede}
     >
       <div className="grid gap-6 md:grid-cols-[1.35fr_1fr]">
         {/* Gallery */}
