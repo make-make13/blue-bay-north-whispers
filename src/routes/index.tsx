@@ -380,7 +380,7 @@ function TopBar() {
         </a>
         <nav className="hidden gap-7 text-sm text-resin-200/70 md:flex">
           <a href="#stays" className="hover:text-resin-50">Коттеджи</a>
-          <a href="#banya" className="hover:text-resin-50">Баня и фурако</a>
+          <a href="#gazebos" className="hover:text-resin-50">Беседки</a>
           <a href="#activities" className="hover:text-resin-50">Активности</a>
           <a href="#transfer" className="hover:text-resin-50">Трансфер</a>
           <a href="#request" className="hover:text-resin-50">Контакты</a>
