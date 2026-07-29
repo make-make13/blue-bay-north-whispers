@@ -1,6 +1,8 @@
 // Domain types shared between mock API and real REST backend.
 export type ID = string;
 
+export type { SiteContent } from "../site-content-default";
+
 export interface AuthUser {
   id: ID;
   email: string;
