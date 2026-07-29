@@ -1496,8 +1496,8 @@ function TransferSection() {
                     {group.routes.map(([label, price]) => (
                       <li key={label} className="flex items-baseline justify-between gap-3 border-b border-resin-800/60 py-2 text-resin-200/85">
                         <span>{label}</span>
-                        <span className="shrink-0 font-mono text-xs tabular-nums text-resin-200/60">
-                          {price ?? "по запросу"}
+                        <span className="shrink-0 font-mono text-xs tabular-nums text-resin-50">
+                          {price}
                         </span>
                       </li>
                     ))}
@@ -1507,7 +1507,7 @@ function TransferSection() {
             </div>
 
             <p className="mt-6 text-xs text-resin-200/50">
-              Час ожидания сверх маршрута — 1 000 ₽. Точную стоимость по вашему направлению уточним при подтверждении заявки.
+              Дополнительное ожидание — 600 ₽ за час. Точную стоимость по вашему направлению уточним при подтверждении заявки.
             </p>
           </div>
         </div>
