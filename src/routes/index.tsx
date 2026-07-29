@@ -1649,23 +1649,17 @@ function TransferSection() {
 /* ---------- Trust ---------- */
 
 function TrustSection() {
-  const items = [
-    ["01", "9 объектов размещения", "4 отдельных коттеджа и 5 блоков таунхауса №3 — всего до 56 гостей."],
-    ["02", "40 км от Мурманска", "Верхнетуломское шоссе, берег реки Тулома, Кольский полуостров."],
-    ["03", "Русская баня и фурако", "Дровяная парная и кедровая купель работают круглый год."],
-    ["04", "Свои беседки", "У Коттеджей №1, №2 и VIP-блока №3 — закреплённые беседки с мангалом."],
-    ["05", "Сезонные активности", "Летом — SUP и гидроцикл, зимой — снегоход, лыжи и северное сияние."],
-    ["06", "Трансфер и Териберка", "Организуем встречу в аэропорту и поездки на Северный океан."],
-  ];
+  const content = useSiteContent();
+  const items = content.trustItems;
+  const s = content.sections.trust;
   return (
-    <Section id="trust" eyebrow="О базе" title="Загородная база, которой доверяют"
-      lede="Только факты — без отзывов, наград и придуманных рейтингов.">
+    <Section id="trust" eyebrow={s.eyebrow} title={s.title} lede={s.lede}>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {items.map(([num, title, body]) => (
-          <div key={num} className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
-            <p className="mb-3 font-mono text-xs tabular-nums text-teal">{num}</p>
-            <p className="mb-2 text-base font-medium text-resin-50">{title}</p>
-            <p className="text-sm text-resin-200/70">{body}</p>
+        {items.map((it) => (
+          <div key={it.id} className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
+            <p className="mb-3 font-mono text-xs tabular-nums text-teal">{it.num}</p>
+            <p className="mb-2 text-base font-medium text-resin-50">{it.title}</p>
+            <p className="text-sm text-resin-200/70">{it.body}</p>
           </div>
         ))}
       </div>
@@ -1673,51 +1667,46 @@ function TrustSection() {
   );
 }
 
-/* ---------- Steps ---------- */
-
 /* ---------- Request (with steps) ---------- */
 
-const BOOKING_STEPS: Array<[string, string]> = [
-  ["Заявка", "Через форму или по телефону."],
-  ["Согласование", "Уточняем даты, объект и услуги."],
-  ["Предоплата", "Фиксируем бронь по подтверждённой заявке."],
-  ["Приезд", "Встречаем на базе, при необходимости — трансфер."],
-];
-
 function RequestSection() {
+  const content = useSiteContent();
+  const s = content.sections.request;
+  const steps = content.bookingSteps;
+  const contact = content.contact;
   return (
     <section id="request" className="border-t border-resin-800/60 bg-gradient-to-b from-resin-950 to-[#0a1110] py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <header className="mb-12 max-w-3xl">
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Бронирование</p>
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">{s.eyebrow}</p>
           <h2 className="text-3xl font-semibold tracking-tight text-resin-50 md:text-5xl">
-            Как забронировать
+            {s.title}
           </h2>
           <p className="mt-4 text-resin-200/70 md:text-lg">
-            Форма — это заявка, не подтверждение брони. Дата закрепляется после ответа менеджера и предоплаты.
+            {s.lede}
           </p>
         </header>
 
         <div className="grid gap-10 md:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col">
             <ol className="space-y-4">
-              {BOOKING_STEPS.map(([title, body], i) => (
-                <li key={title} className="flex gap-4 rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5">
+              {steps.map((step, i) => (
+                <li key={step.id} className="flex gap-4 rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5">
                   <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-teal/15 font-mono text-sm font-semibold text-teal">
                     {i + 1}
                   </div>
                   <div>
-                    <p className="mb-1 text-base font-medium text-resin-50">{title}</p>
-                    <p className="text-sm text-resin-200/70">{body}</p>
+                    <p className="mb-1 text-base font-medium text-resin-50">{step.title}</p>
+                    <p className="text-sm text-resin-200/70">{step.body}</p>
                   </div>
                 </li>
               ))}
             </ol>
 
             <div className="mt-8 space-y-2 border-t border-resin-800/60 pt-6 text-sm text-resin-200/80">
-              <p><span className="text-resin-200/50">Тел.:</span> <a href="tel:+78152780111" className="text-resin-50 hover:text-teal">8 (8152) 780-111</a></p>
-              <p><span className="text-resin-200/50">Адрес:</span> Верхнетуломское шоссе, 36 км</p>
-              <p><span className="text-resin-200/50">Telegram:</span> <a href="https://t.me/golubayabuhta" target="_blank" rel="noopener noreferrer" className="text-resin-50 hover:text-teal">@golubayabuhta</a></p>
+              <p><span className="text-resin-200/50">Тел.:</span> <a href={contact.phoneHref} className="text-resin-50 hover:text-teal">{contact.phone}</a></p>
+              <p><span className="text-resin-200/50">Адрес:</span> {contact.address}</p>
+              <p><span className="text-resin-200/50">Telegram:</span> <a href={contact.telegramHref} target="_blank" rel="noopener noreferrer" className="text-resin-50 hover:text-teal">{contact.telegram}</a></p>
             </div>
           </div>
 
@@ -1725,7 +1714,7 @@ function RequestSection() {
             className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-8"
             onSubmit={(e) => {
               e.preventDefault();
-              alert("Заявка отправлена. Менеджер свяжется с вами.");
+              alert(content.requestSuccessMessage);
             }}
           >
             <div className="grid gap-4 sm:grid-cols-2">
@@ -1746,7 +1735,7 @@ function RequestSection() {
               />
             </label>
             <p className="mt-4 text-xs text-resin-200/45">
-              Нажимая кнопку, вы соглашаетесь на обработку персональных данных в соответствии с 152-ФЗ.
+              {content.bookingConsent}
             </p>
             <button
               type="submit"
@@ -1764,25 +1753,26 @@ function RequestSection() {
 /* ---------- Footer ---------- */
 
 function SiteFooter() {
+  const { footer, contact } = useSiteContent();
   return (
     <footer className="border-t border-resin-800/60 bg-resin-950 py-10">
       <div className="mx-auto grid max-w-6xl gap-6 px-6 text-sm text-resin-200/60 md:grid-cols-3">
         <div className="flex items-start gap-4">
-          <img src={logoAsset.url} alt="Голубая Бухта" className="h-16 w-16 rounded-full ring-1 ring-resin-800" />
+          <img src={logoAsset.url} alt={footer.brand} className="h-16 w-16 rounded-full ring-1 ring-resin-800" />
           <div>
-            <p className="mb-2 font-medium text-resin-50">Голубая Бухта</p>
-            <p>Загородный отель на берегу реки Тулома, 40 км от Мурманска.</p>
+            <p className="mb-2 font-medium text-resin-50">{footer.brand}</p>
+            <p>{footer.description}</p>
           </div>
         </div>
         <div className="space-y-1">
-          <p>Верхнетуломское шоссе, 36 км</p>
-          <p>Мурманская область</p>
-          <p>68.85° N · 32.78° E</p>
+          {footer.addressLines.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         </div>
         <div className="space-y-1 md:text-right">
-          <p><a href="tel:+78152780111" className="hover:text-teal">8 (8152) 780-111</a></p>
-          <p><a href="mailto:hello@blue-bay.example" className="hover:text-teal">hello@blue-bay.example</a></p>
-          <p className="text-xs text-resin-200/40">© 2026 «Голубая Бухта»</p>
+          <p><a href={contact.phoneHref} className="hover:text-teal">{contact.phone}</a></p>
+          <p><a href={`mailto:${contact.email}`} className="hover:text-teal">{contact.email}</a></p>
+          <p className="text-xs text-resin-200/40">{footer.copyright}</p>
         </div>
       </div>
     </footer>
