@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import {
   Home,
+  Layout,
   Trees,
   BedDouble,
   Sparkles,
@@ -22,6 +23,7 @@ import { useAuth } from "../../lib/auth/AuthContext";
 
 const NAV: { to: string; label: string; icon: typeof Home; exact?: boolean }[] = [
   { to: "/admin", label: "Главная", icon: Home, exact: true },
+  { to: "/admin/site", label: "Управление сайтом", icon: Layout },
   { to: "/admin/cottages", label: "Коттеджи", icon: Trees },
   { to: "/admin/rooms", label: "Номера", icon: BedDouble },
   { to: "/admin/services", label: "Услуги", icon: Sparkles },
