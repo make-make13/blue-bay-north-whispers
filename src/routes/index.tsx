@@ -1289,9 +1289,20 @@ function ServiceModal({ item, onClose }: { item: ServiceItem | null; onClose: ()
 
 const TRANSFER_GALLERY = pics("transfer");
 
-const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = [
+type RouteCard = {
+  title: string;
+  direction: "to" | "from";
+  column: "Откуда" | "Куда";
+  icon: "to-hotel" | "from-hotel" | "to-airport" | "from-airport";
+  routes: Array<[string, string]>;
+};
+
+const ROUTE_CARDS: RouteCard[] = [
   {
     title: "В отель «Голубая Бухта»",
+    direction: "to",
+    column: "Откуда",
+    icon: "to-hotel",
     routes: [
       ["Первомайский район", "3 000 ₽"],
       ["Октябрьский район", "3 200 ₽"],
@@ -1302,6 +1313,9 @@ const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = 
   },
   {
     title: "Из отеля «Голубая Бухта»",
+    direction: "from",
+    column: "Куда",
+    icon: "from-hotel",
     routes: [
       ["Кола", "3 600 ₽"],
       ["Первомайский район", "3 600 ₽"],
@@ -1312,6 +1326,9 @@ const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = 
   },
   {
     title: "В аэропорт",
+    direction: "to",
+    column: "Откуда",
+    icon: "to-airport",
     routes: [
       ["Первомайский район", "2 400 ₽"],
       ["Октябрьский район", "2 800 ₽"],
@@ -1321,20 +1338,56 @@ const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = 
   },
   {
     title: "Из аэропорта",
+    direction: "from",
+    column: "Куда",
+    icon: "from-airport",
     routes: [
       ["Мурманск", "3 000 ₽"],
       ["Териберка", "14 000 ₽"],
     ],
   },
-  {
-    title: "Мурманск и Териберка",
-    routes: [
-      ["Мурманск → Териберка", "13 000 ₽"],
-      ["Териберка → Мурманск", "17 000 ₽"],
-      ["Мурманск → Териберка → Мурманск", "24 000 ₽"],
-    ],
-  },
 ];
+
+const TERIBERKA_ROUTES: Array<[string, string]> = [
+  ["Мурманск → Териберка", "13 000 ₽"],
+  ["Териберка → Мурманск", "17 000 ₽"],
+  ["Мурманск → Териберка → Мурманск", "24 000 ₽"],
+];
+
+function RouteCardIcon({ kind }: { kind: RouteCard["icon"] }) {
+  const cls = "h-5 w-5 text-teal";
+  const common = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, className: cls };
+  if (kind === "to-hotel") {
+    return (
+      <svg {...common}>
+        <path d="M4 20V10l8-6 8 6v10" /><path d="M9 20v-6h6v6" />
+        <path d="M2 20h20" />
+      </svg>
+    );
+  }
+  if (kind === "from-hotel") {
+    return (
+      <svg {...common}>
+        <path d="M4 20V10l8-6 8 6v10" /><path d="M9 20v-6h6v6" />
+        <path d="M14 4l6 0M20 4l0 6" />
+      </svg>
+    );
+  }
+  if (kind === "to-airport") {
+    return (
+      <svg {...common}>
+        <path d="M21 16l-9-3-3 3-2-1 3-4-8-3 2-2 9 2 4-5c1-1 3-1 3 1l-2 5 3 4z" />
+        <path d="M4 21h16" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...common}>
+      <path d="M3 16l9-3 3 3 2-1-3-4 8-3-2-2-9 2-4-5c-1-1-3-1-3 1l2 5-3 4z" />
+      <path d="M4 21h16" />
+    </svg>
+  );
+}
 
 function TransferIcon({ kind }: { kind: "seats" | "luggage" | "comfort" }) {
   const common = "h-4 w-4 text-teal";
@@ -1470,10 +1523,10 @@ function TransferSection() {
           onClick={() => setRoutesOpen(false)}
         >
           <div
-            className="relative max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-8"
+            className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-8"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Направления</p>
                 <h3 className="text-2xl font-semibold text-resin-50">Маршрут и цены</h3>
@@ -1488,13 +1541,36 @@ function TransferSection() {
               </button>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              {ROUTE_GROUPS.map((group) => (
-                <div key={group.title}>
-                  <p className="mb-3 text-sm font-medium text-teal">{group.title}</p>
-                  <ul className="space-y-2 text-sm">
-                    {group.routes.map(([label, price]) => (
-                      <li key={label} className="flex items-baseline justify-between gap-3 border-b border-resin-800/60 py-2 text-resin-200/85">
+            {/* decorative route line */}
+            <div className="mb-6 flex items-center gap-2" aria-hidden>
+              <span className="h-2 w-2 rounded-full bg-teal" />
+              <span className="h-px flex-1 bg-gradient-to-r from-teal via-teal/40 to-transparent" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-teal/70">
+                <path d="M4 17V9l4-4h8l4 4v8" /><path d="M4 17h16" /><circle cx="8" cy="17" r="2" /><circle cx="16" cy="17" r="2" />
+              </svg>
+              <span className="h-px flex-1 bg-gradient-to-l from-teal via-teal/40 to-transparent" />
+              <span className="h-2 w-2 rounded-full bg-teal" />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {ROUTE_CARDS.map((card) => (
+                <div
+                  key={card.title}
+                  className="rounded-xl border border-resin-800 bg-resin-950/40 p-5"
+                >
+                  <div className="mb-4 flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-lg border border-resin-800 bg-resin-950/70">
+                      <RouteCardIcon kind={card.icon} />
+                    </span>
+                    <p className="text-base font-medium text-resin-50">{card.title}</p>
+                  </div>
+                  <div className="mb-2 flex items-baseline justify-between border-b border-resin-800 pb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-resin-200/50">
+                    <span>{card.column}</span>
+                    <span>Стоимость</span>
+                  </div>
+                  <ul className="text-sm">
+                    {card.routes.map(([label, price]) => (
+                      <li key={label} className="flex items-baseline justify-between gap-3 border-b border-resin-800/50 py-2 last:border-b-0 text-resin-200/85">
                         <span>{label}</span>
                         <span className="shrink-0 font-mono text-xs tabular-nums text-resin-50">
                           {price}
@@ -1506,10 +1582,44 @@ function TransferSection() {
               ))}
             </div>
 
-            <p className="mt-6 text-xs text-resin-200/50">
-              Дополнительное ожидание — 600 ₽ за час. Точную стоимость по вашему направлению уточним при подтверждении заявки.
-            </p>
+            <div className="mt-4 rounded-xl border border-resin-800 bg-resin-950/40 p-5">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-lg border border-resin-800 bg-resin-950/70">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-teal">
+                    <path d="M3 12h13l-3-3M16 12l-3 3" />
+                    <circle cx="20" cy="12" r="1.5" />
+                    <circle cx="4" cy="12" r="1.5" />
+                  </svg>
+                </span>
+                <p className="text-base font-medium text-resin-50">Мурманск — Териберка</p>
+              </div>
+              <div className="mb-2 flex items-baseline justify-between border-b border-resin-800 pb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-resin-200/50">
+                <span>Маршрут</span>
+                <span>Стоимость</span>
+              </div>
+              <ul className="text-sm">
+                {TERIBERKA_ROUTES.map(([label, price]) => (
+                  <li key={label} className="flex items-baseline justify-between gap-3 border-b border-resin-800/50 py-2 last:border-b-0 text-resin-200/85">
+                    <span>{label}</span>
+                    <span className="shrink-0 font-mono text-xs tabular-nums text-resin-50">
+                      {price}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-6 flex items-start gap-3 rounded-xl border border-teal/25 bg-teal/5 p-4 text-xs text-resin-200/75">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 h-4 w-4 shrink-0 text-teal">
+                <circle cx="12" cy="12" r="9" /><path d="M12 8v.01M11 12h1v4h1" />
+              </svg>
+              <div className="space-y-1">
+                <p><span className="text-resin-50">Дополнительное ожидание</span> — 600 ₽ за час.</p>
+                <p>Точную стоимость по вашему направлению уточним при подтверждении заявки.</p>
+              </div>
+            </div>
           </div>
+
         </div>
       )}
     </Section>
