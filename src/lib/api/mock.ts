@@ -1,4 +1,5 @@
 // Mock API backed by localStorage. Mirrors REST endpoints in src/lib/api/index.ts.
+import { DEFAULT_SITE_CONTENT, type SiteContent } from "../site-content-default";
 import type {
   AuthSession,
   Booking,
@@ -10,6 +11,8 @@ import type {
   Service,
   SiteSettings,
 } from "./types";
+
+const CONTENT_KEY = "gb.admin.sitecontent.v1";
 
 const DB_KEY = "gb.admin.mockdb.v2";
 const DEMO_EMAIL = "admin@golubaya-buhta.ru";
@@ -243,6 +246,31 @@ export const mockUploads = {
   },
   async remove(_url: string): Promise<void> {
     return delay(undefined);
+  },
+};
+
+export const mockContent = {
+  async get(): Promise<SiteContent> {
+    if (typeof window === "undefined") return delay(DEFAULT_SITE_CONTENT);
+    const raw = window.localStorage.getItem(CONTENT_KEY);
+    if (!raw) return delay(DEFAULT_SITE_CONTENT);
+    try {
+      return delay(JSON.parse(raw) as SiteContent);
+    } catch {
+      return delay(DEFAULT_SITE_CONTENT);
+    }
+  },
+  async update(next: SiteContent): Promise<SiteContent> {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(CONTENT_KEY, JSON.stringify(next));
+    }
+    return delay(next);
+  },
+  async reset(): Promise<SiteContent> {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(CONTENT_KEY);
+    }
+    return delay(DEFAULT_SITE_CONTENT);
   },
 };
 
