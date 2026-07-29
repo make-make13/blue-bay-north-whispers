@@ -1501,20 +1501,16 @@ function TransferSection() {
         {/* Info */}
         <div className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Автомобиль</p>
-          <p className="text-xl font-medium text-resin-50">Citroen SpaceTourer</p>
-          <p className="mt-1 text-sm text-resin-200/70">Микроавтобус на 7 мест с багажным отделением. Все поездки — с водителем.</p>
+          <p className="text-xl font-medium text-resin-50">{content.transfer.car}</p>
+          <p className="mt-1 text-sm text-resin-200/70">{content.transfer.carDescription}</p>
 
           <div className="mt-6 grid grid-cols-1 gap-3 border-t border-resin-800 pt-6">
-            {([
-              ["seats", "До 7 пассажиров"],
-              ["luggage", "Место для багажа"],
-              ["comfort", "Комфортный салон"],
-            ] as Array<["seats" | "luggage" | "comfort", string]>).map(([icon, text]) => (
-              <div key={text} className="flex items-center gap-3 text-sm text-resin-200/85">
+            {content.transfer.features.map((f) => (
+              <div key={f.id} className="flex items-center gap-3 text-sm text-resin-200/85">
                 <span className="grid h-9 w-9 place-items-center rounded-lg border border-resin-800 bg-resin-950/60">
-                  <TransferIcon kind={icon} />
+                  <TransferIcon kind={f.icon} />
                 </span>
-                {text}
+                {f.text}
               </div>
             ))}
           </div>
@@ -1536,7 +1532,7 @@ function TransferSection() {
           </div>
 
           <p className="mt-5 text-xs text-resin-200/50">
-            Трансфер организуется по подтверждённой заявке. Стоимость указана за машину, до 7 гостей с багажом.
+            {content.transfer.footnote}
           </p>
         </div>
       </div>
