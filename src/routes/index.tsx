@@ -372,27 +372,26 @@ function Index() {
 /* ---------- Top bar ---------- */
 
 function TopBar() {
+  const { nav } = useSiteContent();
   return (
     <header className="sticky top-0 z-40 border-b border-resin-800/70 bg-resin-950/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <a href="#top" className="flex items-center gap-2">
           <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-resin-900 ring-1 ring-resin-800">
-            <img src={logoAsset.url} alt="Голубая Бухта" className="h-full w-full object-cover" />
+            <img src={logoAsset.url} alt={nav.brand} className="h-full w-full object-cover" />
           </span>
-          <span className="text-sm font-medium tracking-tight text-resin-50">Голубая&nbsp;Бухта</span>
+          <span className="text-sm font-medium tracking-tight text-resin-50">{nav.brand}</span>
         </a>
         <nav className="hidden gap-7 text-sm text-resin-200/70 md:flex">
-          <a href="#stays" className="hover:text-resin-50">Коттеджи</a>
-          <a href="#gazebos" className="hover:text-resin-50">Беседки</a>
-          <a href="#activities" className="hover:text-resin-50">Активности</a>
-          <a href="#transfer" className="hover:text-resin-50">Трансфер</a>
-          <a href="#request" className="hover:text-resin-50">Контакты</a>
+          {nav.links.map((l) => (
+            <a key={l.id} href={l.href} className="hover:text-resin-50">{l.label}</a>
+          ))}
         </nav>
         <a
           href="#request"
           className="rounded-full bg-teal px-4 py-2 text-xs font-semibold tracking-wide text-resin-950 transition-colors hover:bg-teal-dim"
         >
-          Оставить заявку
+          {nav.cta}
         </a>
       </div>
     </header>
@@ -402,6 +401,7 @@ function TopBar() {
 /* ---------- Hero ---------- */
 
 function Hero() {
+  const { hero } = useSiteContent();
   return (
     <section id="top" className="relative overflow-hidden border-b border-resin-800/60">
       <img
@@ -414,27 +414,26 @@ function Hero() {
         <div className="max-w-2xl">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-resin-800 bg-resin-950/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-teal">
             <span className="h-1.5 w-1.5 rounded-full bg-teal" />
-            68° N · берег Туломы · 40 км от Мурманска
+            {hero.badge}
           </p>
           <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-resin-50 md:text-6xl">
-            &nbsp;Голубая&nbsp;Бухта - отдых на природе с городским комфортом
+            {hero.title}
           </h1>
           <p className="mt-6 max-w-xl text-base text-resin-200/75 md:text-lg">
-            Загородный отель, на берегу реки Тулома в 40 км от Мурманска. Коттеджи, беседки,
-            баня, фурако и активный досуг.
+            {hero.description}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href="#request"
               className="rounded-full bg-teal px-6 py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
             >
-              Забронировать
+              {hero.ctaPrimary}
             </a>
             <a
               href="#stays"
               className="rounded-full border border-resin-200/25 px-6 py-3 text-sm text-resin-50 transition-colors hover:border-teal hover:text-teal"
             >
-              Посмотреть коттеджи
+              {hero.ctaSecondary}
             </a>
           </div>
         </div>
@@ -446,9 +445,11 @@ function Hero() {
 /* ---------- Stays ---------- */
 
 function StaysSection() {
+  const content = useSiteContent();
+  const stays = content.stays;
+  const s = content.sections.stays;
   return (
-    <Section id="stays" eyebrow="Размещение" title="Коттеджи для компаний, семьи и уютных пар"
-      lede="Отдельные коттеджи и блоки таунхауса №3 — это разные типы объектов. Вместимость у каждого своя, от 2 до 12 гостей.">
+    <Section id="stays" eyebrow={s.eyebrow} title={s.title} lede={s.lede}>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {stays.map((s) => (
           <StayCard key={s.id} stay={s} />
