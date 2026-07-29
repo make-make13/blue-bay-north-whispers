@@ -14,6 +14,7 @@ import {
   ImagePlus,
   Type,
   PenLine,
+  Layout,
 } from "lucide-react";
 
 import { AdminShell } from "../components/admin/AdminShell";
@@ -63,6 +64,7 @@ function AdminIndex() {
   }, []);
 
   const sections = [
+    { to: "/admin/site", label: "Управление сайтом", desc: "Все тексты, коттеджи, услуги и трансфер главной страницы", icon: Layout },
     { to: "/admin/cottages", label: "Коттеджи", desc: "Отдельные дома с сауной и мангалом", count: c.cottages, icon: Trees },
     { to: "/admin/rooms", label: "Номера", desc: "Блоки таунхауса", count: c.rooms, icon: BedDouble },
     { to: "/admin/services", label: "Услуги", desc: "Баня, купель, активности", count: c.services, icon: Sparkles },

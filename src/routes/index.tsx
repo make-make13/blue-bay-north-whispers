@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import logoAsset from "@/assets/golubaya-buhta-logo.webp.asset.json";
 import heroAsset from "@/assets/hero-gb-cottages.webp.asset.json";
 import galleryData from "@/assets/gallery.json";
+import { SiteContentProvider, useSiteContent } from "@/lib/site-content-context";
 
 const gallery = galleryData as Record<string, string[]>;
 const pics = (slug: string): string[] => gallery[slug] ?? [];
@@ -350,46 +351,47 @@ function formatPrice(n: number) {
 
 function Index() {
   return (
-    <div className="min-h-screen bg-resin-950 text-resin-200 selection:bg-teal/30 selection:text-resin-50">
-      <TopBar />
-      <main>
-        <Hero />
-        <StaysSection />
-        <GazeboSection />
-        <ActivitiesSection />
-        <TransferSection />
-        <TrustSection />
-        <RequestSection />
-      </main>
-      <SiteFooter />
-    </div>
+    <SiteContentProvider>
+      <div className="min-h-screen bg-resin-950 text-resin-200 selection:bg-teal/30 selection:text-resin-50">
+        <TopBar />
+        <main>
+          <Hero />
+          <StaysSection />
+          <GazeboSection />
+          <ActivitiesSection />
+          <TransferSection />
+          <TrustSection />
+          <RequestSection />
+        </main>
+        <SiteFooter />
+      </div>
+    </SiteContentProvider>
   );
 }
 
 /* ---------- Top bar ---------- */
 
 function TopBar() {
+  const { nav } = useSiteContent();
   return (
     <header className="sticky top-0 z-40 border-b border-resin-800/70 bg-resin-950/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <a href="#top" className="flex items-center gap-2">
           <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-resin-900 ring-1 ring-resin-800">
-            <img src={logoAsset.url} alt="Голубая Бухта" className="h-full w-full object-cover" />
+            <img src={logoAsset.url} alt={nav.brand} className="h-full w-full object-cover" />
           </span>
-          <span className="text-sm font-medium tracking-tight text-resin-50">Голубая&nbsp;Бухта</span>
+          <span className="text-sm font-medium tracking-tight text-resin-50">{nav.brand}</span>
         </a>
         <nav className="hidden gap-7 text-sm text-resin-200/70 md:flex">
-          <a href="#stays" className="hover:text-resin-50">Коттеджи</a>
-          <a href="#gazebos" className="hover:text-resin-50">Беседки</a>
-          <a href="#activities" className="hover:text-resin-50">Активности</a>
-          <a href="#transfer" className="hover:text-resin-50">Трансфер</a>
-          <a href="#request" className="hover:text-resin-50">Контакты</a>
+          {nav.links.map((l) => (
+            <a key={l.id} href={l.href} className="hover:text-resin-50">{l.label}</a>
+          ))}
         </nav>
         <a
           href="#request"
           className="rounded-full bg-teal px-4 py-2 text-xs font-semibold tracking-wide text-resin-950 transition-colors hover:bg-teal-dim"
         >
-          Оставить заявку
+          {nav.cta}
         </a>
       </div>
     </header>
@@ -399,6 +401,7 @@ function TopBar() {
 /* ---------- Hero ---------- */
 
 function Hero() {
+  const { hero } = useSiteContent();
   return (
     <section id="top" className="relative overflow-hidden border-b border-resin-800/60">
       <img
@@ -411,27 +414,26 @@ function Hero() {
         <div className="max-w-2xl">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-resin-800 bg-resin-950/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-teal">
             <span className="h-1.5 w-1.5 rounded-full bg-teal" />
-            68° N · берег Туломы · 40 км от Мурманска
+            {hero.badge}
           </p>
           <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-resin-50 md:text-6xl">
-            &nbsp;Голубая&nbsp;Бухта - отдых на природе с городским комфортом
+            {hero.title}
           </h1>
           <p className="mt-6 max-w-xl text-base text-resin-200/75 md:text-lg">
-            Загородный отель, на берегу реки Тулома в 40 км от Мурманска. Коттеджи, беседки,
-            баня, фурако и активный досуг.
+            {hero.description}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href="#request"
               className="rounded-full bg-teal px-6 py-3 text-sm font-semibold text-resin-950 transition-colors hover:bg-teal-dim"
             >
-              Забронировать
+              {hero.ctaPrimary}
             </a>
             <a
               href="#stays"
               className="rounded-full border border-resin-200/25 px-6 py-3 text-sm text-resin-50 transition-colors hover:border-teal hover:text-teal"
             >
-              Посмотреть коттеджи
+              {hero.ctaSecondary}
             </a>
           </div>
         </div>
@@ -443,9 +445,11 @@ function Hero() {
 /* ---------- Stays ---------- */
 
 function StaysSection() {
+  const content = useSiteContent();
+  const stays = content.stays;
+  const s = content.sections.stays;
   return (
-    <Section id="stays" eyebrow="Размещение" title="Коттеджи для компаний, семьи и уютных пар"
-      lede="Отдельные коттеджи и блоки таунхауса №3 — это разные типы объектов. Вместимость у каждого своя, от 2 до 12 гостей.">
+    <Section id="stays" eyebrow={s.eyebrow} title={s.title} lede={s.lede}>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {stays.map((s) => (
           <StayCard key={s.id} stay={s} />
@@ -768,9 +772,13 @@ function GazeboIcon({ kind }: { kind: "house" | "house2" | "crown" | "people" })
 }
 
 function GazeboSection() {
+  const content = useSiteContent();
+  const GAZEBO_CARDS = content.gazebos;
+  const s = content.sections.gazebos;
   const [active, setActive] = useState(0);
   const [slide, setSlide] = useState(0);
-  const currentImages = pics(GAZEBO_CARDS[active].slug);
+  const activeCard = GAZEBO_CARDS[active] ?? GAZEBO_CARDS[0];
+  const currentImages = pics(activeCard?.slug ?? "");
   const total = Math.max(currentImages.length, 1);
   const safeSlide = Math.min(slide, total - 1);
   const prev = () => setSlide((s) => (s - 1 + total) % total);
@@ -784,9 +792,9 @@ function GazeboSection() {
   return (
     <Section
       id="gazebos"
-      eyebrow="Беседки"
-      title="Мангальные зоны на свежем воздухе"
-      lede="&nbsp;Уютные беседки рядом с коттеджами. Решётки и шампура предоставляются, уголь и розжиг приобретаются отдельно.&nbsp;"
+      eyebrow={s.eyebrow}
+      title={s.title}
+      lede={s.lede}
     >
       <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
         {/* Left: image carousel */}
@@ -795,11 +803,11 @@ function GazeboSection() {
             {currentImages[safeSlide] ? (
               <img
                 src={currentImages[safeSlide]}
-                alt={GAZEBO_CARDS[active].title}
+                alt={activeCard?.title ?? ""}
                 className="absolute inset-0 h-full w-full object-cover"
               />
             ) : (
-              <Placeholder label={GAZEBO_CARDS[active].title} className="absolute inset-0" />
+              <Placeholder label={activeCard?.title ?? ""} className="absolute inset-0" />
             )}
             {total > 1 && (
               <>
@@ -871,7 +879,7 @@ function GazeboSection() {
           </div>
 
           <p className="mt-5 text-xs leading-relaxed text-resin-200/55">
-            * Закреплена за конкретным коттеджем (№1, №2, VIP-блок №3). Аренда возможна только при отсутствии заезда в соответствующий коттедж.
+            {content.gazeboFootnote}
           </p>
 
           <a
@@ -1079,6 +1087,10 @@ const serviceItems: ServiceItem[] = [
 ];
 
 function ActivitiesSection() {
+  const content = useSiteContent();
+  const serviceItems = content.services;
+  const extrasRows = content.extras;
+  const s = content.sections.activities;
   const tabs: { id: "all" | ServiceCategory; label: string }[] = [
     { id: "all", label: "Все" },
     { id: "banya", label: "Баня и фурако" },
@@ -1094,9 +1106,9 @@ function ActivitiesSection() {
   return (
     <Section
       id="activities"
-      eyebrow="Услуги"
-      title="Баня, фурако и сезонные развлечения"
-      lede="Русская дровяная баня и фурако доступны круглый год. Водные активности — летом, снежные — зимой. Выбирайте отдых по настроению: на воде, в лесу или под открытым небом."
+      eyebrow={s.eyebrow}
+      title={s.title}
+      lede={s.lede}
     >
       <div className="mb-8 flex flex-wrap gap-2">
         {tabs.map((t) => (
@@ -1141,17 +1153,17 @@ function ActivitiesSection() {
 
       <div className="mt-14">
         <div className="mb-5 flex items-baseline justify-between gap-4">
-          <h3 className="text-lg font-semibold text-resin-50">Дополнительно на месте</h3>
-          <p className="text-xs text-resin-200/60">Уточняйте наличие при заезде</p>
+          <h3 className="text-lg font-semibold text-resin-50">{content.extrasHeading}</h3>
+          <p className="text-xs text-resin-200/60">{content.extrasSubheading}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {extrasRows.map(([label, price]) => (
+          {extrasRows.map((row) => (
             <div
-              key={label}
+              key={row.id}
               className="flex items-center justify-between gap-4 rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5"
             >
-              <p className="text-sm text-resin-200/80">{label}</p>
-              <p className="font-mono text-lg font-semibold tabular-nums text-teal whitespace-nowrap">{price}</p>
+              <p className="text-sm text-resin-200/80">{row.label}</p>
+              <p className="font-mono text-lg font-semibold tabular-nums text-teal whitespace-nowrap">{row.price}</p>
             </div>
 
           ))}
@@ -1414,6 +1426,18 @@ function TransferIcon({ kind }: { kind: "seats" | "luggage" | "comfort" }) {
 }
 
 function TransferSection() {
+  const content = useSiteContent();
+  const s = content.sections.transfer;
+  const TRANSFER_GALLERY = pics(content.transfer.gallerySlug);
+  const ROUTE_CARDS = content.transfer.routeGroups.map((g) => ({
+    title: g.title,
+    column: g.column,
+    icon: g.icon,
+    routes: g.routes.map((r) => [r.label, r.price] as [string, string]),
+  }));
+  const TERIBERKA_ROUTES = content.transfer.teriberka.map(
+    (t) => [t.label, t.price] as [string, string],
+  );
   const [slide, setSlide] = useState(0);
   const [routesOpen, setRoutesOpen] = useState(false);
   const total = TRANSFER_GALLERY.length;
@@ -1421,9 +1445,9 @@ function TransferSection() {
   return (
     <Section
       id="transfer"
-      eyebrow="Логистика"
-      title="Комфортный трансфер на микроавтобусе"
-      lede="Citroen SpaceTourer на 7 мест. Встречаем в аэропорту и на вокзале Мурманска, возим в город и Териберку."
+      eyebrow={s.eyebrow}
+      title={s.title}
+      lede={s.lede}
     >
       <div className="grid gap-6 md:grid-cols-[1.35fr_1fr]">
         {/* Gallery */}
@@ -1477,20 +1501,16 @@ function TransferSection() {
         {/* Info */}
         <div className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Автомобиль</p>
-          <p className="text-xl font-medium text-resin-50">Citroen SpaceTourer</p>
-          <p className="mt-1 text-sm text-resin-200/70">Микроавтобус на 7 мест с багажным отделением. Все поездки — с водителем.</p>
+          <p className="text-xl font-medium text-resin-50">{content.transfer.car}</p>
+          <p className="mt-1 text-sm text-resin-200/70">{content.transfer.carDescription}</p>
 
           <div className="mt-6 grid grid-cols-1 gap-3 border-t border-resin-800 pt-6">
-            {([
-              ["seats", "До 7 пассажиров"],
-              ["luggage", "Место для багажа"],
-              ["comfort", "Комфортный салон"],
-            ] as Array<["seats" | "luggage" | "comfort", string]>).map(([icon, text]) => (
-              <div key={text} className="flex items-center gap-3 text-sm text-resin-200/85">
+            {content.transfer.features.map((f) => (
+              <div key={f.id} className="flex items-center gap-3 text-sm text-resin-200/85">
                 <span className="grid h-9 w-9 place-items-center rounded-lg border border-resin-800 bg-resin-950/60">
-                  <TransferIcon kind={icon} />
+                  <TransferIcon kind={f.icon} />
                 </span>
-                {text}
+                {f.text}
               </div>
             ))}
           </div>
@@ -1512,7 +1532,7 @@ function TransferSection() {
           </div>
 
           <p className="mt-5 text-xs text-resin-200/50">
-            Трансфер организуется по подтверждённой заявке. Стоимость указана за машину, до 7 гостей с багажом.
+            {content.transfer.footnote}
           </p>
         </div>
       </div>
@@ -1591,7 +1611,7 @@ function TransferSection() {
                     <circle cx="4" cy="12" r="1.5" />
                   </svg>
                 </span>
-                <p className="text-base font-medium text-resin-50">Мурманск — Териберка</p>
+                <p className="text-base font-medium text-resin-50">{content.transfer.teriberkaTitle}</p>
               </div>
               <div className="mb-2 flex items-baseline justify-between border-b border-resin-800 pb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-resin-200/50">
                 <span>Маршрут</span>
@@ -1614,8 +1634,8 @@ function TransferSection() {
                 <circle cx="12" cy="12" r="9" /><path d="M12 8v.01M11 12h1v4h1" />
               </svg>
               <div className="space-y-1">
-                <p><span className="text-resin-50">Дополнительное ожидание</span> — 600 ₽ за час.</p>
-                <p>Точную стоимость по вашему направлению уточним при подтверждении заявки.</p>
+                <p><span className="text-resin-50">{content.transfer.waitLabel}</span> — {content.transfer.waitPrice} за час.</p>
+                <p>{content.transfer.waitNote}</p>
               </div>
             </div>
           </div>
@@ -1629,23 +1649,17 @@ function TransferSection() {
 /* ---------- Trust ---------- */
 
 function TrustSection() {
-  const items = [
-    ["01", "9 объектов размещения", "4 отдельных коттеджа и 5 блоков таунхауса №3 — всего до 56 гостей."],
-    ["02", "40 км от Мурманска", "Верхнетуломское шоссе, берег реки Тулома, Кольский полуостров."],
-    ["03", "Русская баня и фурако", "Дровяная парная и кедровая купель работают круглый год."],
-    ["04", "Свои беседки", "У Коттеджей №1, №2 и VIP-блока №3 — закреплённые беседки с мангалом."],
-    ["05", "Сезонные активности", "Летом — SUP и гидроцикл, зимой — снегоход, лыжи и северное сияние."],
-    ["06", "Трансфер и Териберка", "Организуем встречу в аэропорту и поездки на Северный океан."],
-  ];
+  const content = useSiteContent();
+  const items = content.trustItems;
+  const s = content.sections.trust;
   return (
-    <Section id="trust" eyebrow="О базе" title="Загородная база, которой доверяют"
-      lede="Только факты — без отзывов, наград и придуманных рейтингов.">
+    <Section id="trust" eyebrow={s.eyebrow} title={s.title} lede={s.lede}>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {items.map(([num, title, body]) => (
-          <div key={num} className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
-            <p className="mb-3 font-mono text-xs tabular-nums text-teal">{num}</p>
-            <p className="mb-2 text-base font-medium text-resin-50">{title}</p>
-            <p className="text-sm text-resin-200/70">{body}</p>
+        {items.map((it) => (
+          <div key={it.id} className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6">
+            <p className="mb-3 font-mono text-xs tabular-nums text-teal">{it.num}</p>
+            <p className="mb-2 text-base font-medium text-resin-50">{it.title}</p>
+            <p className="text-sm text-resin-200/70">{it.body}</p>
           </div>
         ))}
       </div>
@@ -1653,51 +1667,46 @@ function TrustSection() {
   );
 }
 
-/* ---------- Steps ---------- */
-
 /* ---------- Request (with steps) ---------- */
 
-const BOOKING_STEPS: Array<[string, string]> = [
-  ["Заявка", "Через форму или по телефону."],
-  ["Согласование", "Уточняем даты, объект и услуги."],
-  ["Предоплата", "Фиксируем бронь по подтверждённой заявке."],
-  ["Приезд", "Встречаем на базе, при необходимости — трансфер."],
-];
-
 function RequestSection() {
+  const content = useSiteContent();
+  const s = content.sections.request;
+  const steps = content.bookingSteps;
+  const contact = content.contact;
   return (
     <section id="request" className="border-t border-resin-800/60 bg-gradient-to-b from-resin-950 to-[#0a1110] py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <header className="mb-12 max-w-3xl">
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">Бронирование</p>
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-teal">{s.eyebrow}</p>
           <h2 className="text-3xl font-semibold tracking-tight text-resin-50 md:text-5xl">
-            Как забронировать
+            {s.title}
           </h2>
           <p className="mt-4 text-resin-200/70 md:text-lg">
-            Форма — это заявка, не подтверждение брони. Дата закрепляется после ответа менеджера и предоплаты.
+            {s.lede}
           </p>
         </header>
 
         <div className="grid gap-10 md:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col">
             <ol className="space-y-4">
-              {BOOKING_STEPS.map(([title, body], i) => (
-                <li key={title} className="flex gap-4 rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5">
+              {steps.map((step, i) => (
+                <li key={step.id} className="flex gap-4 rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-5">
                   <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-teal/15 font-mono text-sm font-semibold text-teal">
                     {i + 1}
                   </div>
                   <div>
-                    <p className="mb-1 text-base font-medium text-resin-50">{title}</p>
-                    <p className="text-sm text-resin-200/70">{body}</p>
+                    <p className="mb-1 text-base font-medium text-resin-50">{step.title}</p>
+                    <p className="text-sm text-resin-200/70">{step.body}</p>
                   </div>
                 </li>
               ))}
             </ol>
 
             <div className="mt-8 space-y-2 border-t border-resin-800/60 pt-6 text-sm text-resin-200/80">
-              <p><span className="text-resin-200/50">Тел.:</span> <a href="tel:+78152780111" className="text-resin-50 hover:text-teal">8 (8152) 780-111</a></p>
-              <p><span className="text-resin-200/50">Адрес:</span> Верхнетуломское шоссе, 36 км</p>
-              <p><span className="text-resin-200/50">Telegram:</span> <a href="https://t.me/golubayabuhta" target="_blank" rel="noopener noreferrer" className="text-resin-50 hover:text-teal">@golubayabuhta</a></p>
+              <p><span className="text-resin-200/50">Тел.:</span> <a href={contact.phoneHref} className="text-resin-50 hover:text-teal">{contact.phone}</a></p>
+              <p><span className="text-resin-200/50">Адрес:</span> {contact.address}</p>
+              <p><span className="text-resin-200/50">Telegram:</span> <a href={contact.telegramHref} target="_blank" rel="noopener noreferrer" className="text-resin-50 hover:text-teal">{contact.telegram}</a></p>
             </div>
           </div>
 
@@ -1705,7 +1714,7 @@ function RequestSection() {
             className="rounded-2xl border border-resin-800 bg-[color:var(--color-surface)] p-6 md:p-8"
             onSubmit={(e) => {
               e.preventDefault();
-              alert("Заявка отправлена. Менеджер свяжется с вами.");
+              alert(content.requestSuccessMessage);
             }}
           >
             <div className="grid gap-4 sm:grid-cols-2">
@@ -1726,7 +1735,7 @@ function RequestSection() {
               />
             </label>
             <p className="mt-4 text-xs text-resin-200/45">
-              Нажимая кнопку, вы соглашаетесь на обработку персональных данных в соответствии с 152-ФЗ.
+              {content.bookingConsent}
             </p>
             <button
               type="submit"
@@ -1744,25 +1753,26 @@ function RequestSection() {
 /* ---------- Footer ---------- */
 
 function SiteFooter() {
+  const { footer, contact } = useSiteContent();
   return (
     <footer className="border-t border-resin-800/60 bg-resin-950 py-10">
       <div className="mx-auto grid max-w-6xl gap-6 px-6 text-sm text-resin-200/60 md:grid-cols-3">
         <div className="flex items-start gap-4">
-          <img src={logoAsset.url} alt="Голубая Бухта" className="h-16 w-16 rounded-full ring-1 ring-resin-800" />
+          <img src={logoAsset.url} alt={footer.brand} className="h-16 w-16 rounded-full ring-1 ring-resin-800" />
           <div>
-            <p className="mb-2 font-medium text-resin-50">Голубая Бухта</p>
-            <p>Загородный отель на берегу реки Тулома, 40 км от Мурманска.</p>
+            <p className="mb-2 font-medium text-resin-50">{footer.brand}</p>
+            <p>{footer.description}</p>
           </div>
         </div>
         <div className="space-y-1">
-          <p>Верхнетуломское шоссе, 36 км</p>
-          <p>Мурманская область</p>
-          <p>68.85° N · 32.78° E</p>
+          {footer.addressLines.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         </div>
         <div className="space-y-1 md:text-right">
-          <p><a href="tel:+78152780111" className="hover:text-teal">8 (8152) 780-111</a></p>
-          <p><a href="mailto:hello@blue-bay.example" className="hover:text-teal">hello@blue-bay.example</a></p>
-          <p className="text-xs text-resin-200/40">© 2026 «Голубая Бухта»</p>
+          <p><a href={contact.phoneHref} className="hover:text-teal">{contact.phone}</a></p>
+          <p><a href={`mailto:${contact.email}`} className="hover:text-teal">{contact.email}</a></p>
+          <p className="text-xs text-resin-200/40">{footer.copyright}</p>
         </div>
       </div>
     </footer>

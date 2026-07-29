@@ -20,6 +20,7 @@ import type {
   LoginPayload,
   PriceRow,
   Service,
+  SiteContent,
   SiteSettings,
 } from "./types";
 
@@ -90,6 +91,18 @@ export const api = {
       USE_MOCK
         ? mock.mockUploads.remove(url)
         : request<void>("/uploads", { method: "DELETE", json: { url } }),
+  },
+  content: {
+    get: (): Promise<SiteContent> =>
+      USE_MOCK ? mock.mockContent.get() : request<SiteContent>("/content"),
+    update: (next: SiteContent): Promise<SiteContent> =>
+      USE_MOCK
+        ? mock.mockContent.update(next)
+        : request<SiteContent>("/content", { method: "PUT", json: next }),
+    reset: (): Promise<SiteContent> =>
+      USE_MOCK
+        ? mock.mockContent.reset()
+        : request<SiteContent>("/content/reset", { method: "POST" }),
   },
 };
 
