@@ -772,9 +772,13 @@ function GazeboIcon({ kind }: { kind: "house" | "house2" | "crown" | "people" })
 }
 
 function GazeboSection() {
+  const content = useSiteContent();
+  const GAZEBO_CARDS = content.gazebos;
+  const s = content.sections.gazebos;
   const [active, setActive] = useState(0);
   const [slide, setSlide] = useState(0);
-  const currentImages = pics(GAZEBO_CARDS[active].slug);
+  const activeCard = GAZEBO_CARDS[active] ?? GAZEBO_CARDS[0];
+  const currentImages = pics(activeCard?.slug ?? "");
   const total = Math.max(currentImages.length, 1);
   const safeSlide = Math.min(slide, total - 1);
   const prev = () => setSlide((s) => (s - 1 + total) % total);
@@ -788,9 +792,9 @@ function GazeboSection() {
   return (
     <Section
       id="gazebos"
-      eyebrow="Беседки"
-      title="Мангальные зоны на свежем воздухе"
-      lede="&nbsp;Уютные беседки рядом с коттеджами. Решётки и шампура предоставляются, уголь и розжиг приобретаются отдельно.&nbsp;"
+      eyebrow={s.eyebrow}
+      title={s.title}
+      lede={s.lede}
     >
       <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
         {/* Left: image carousel */}
