@@ -803,11 +803,11 @@ function GazeboSection() {
             {currentImages[safeSlide] ? (
               <img
                 src={currentImages[safeSlide]}
-                alt={GAZEBO_CARDS[active].title}
+                alt={activeCard?.title ?? ""}
                 className="absolute inset-0 h-full w-full object-cover"
               />
             ) : (
-              <Placeholder label={GAZEBO_CARDS[active].title} className="absolute inset-0" />
+              <Placeholder label={activeCard?.title ?? ""} className="absolute inset-0" />
             )}
             {total > 1 && (
               <>
@@ -879,7 +879,7 @@ function GazeboSection() {
           </div>
 
           <p className="mt-5 text-xs leading-relaxed text-resin-200/55">
-            * Закреплена за конкретным коттеджем (№1, №2, VIP-блок №3). Аренда возможна только при отсутствии заезда в соответствующий коттедж.
+            {content.gazeboFootnote}
           </p>
 
           <a
@@ -1087,6 +1087,10 @@ const serviceItems: ServiceItem[] = [
 ];
 
 function ActivitiesSection() {
+  const content = useSiteContent();
+  const serviceItems = content.services;
+  const extrasRows = content.extras;
+  const s = content.sections.activities;
   const tabs: { id: "all" | ServiceCategory; label: string }[] = [
     { id: "all", label: "Все" },
     { id: "banya", label: "Баня и фурако" },
@@ -1102,9 +1106,9 @@ function ActivitiesSection() {
   return (
     <Section
       id="activities"
-      eyebrow="Услуги"
-      title="Баня, фурако и сезонные развлечения"
-      lede="Русская дровяная баня и фурако доступны круглый год. Водные активности — летом, снежные — зимой. Выбирайте отдых по настроению: на воде, в лесу или под открытым небом."
+      eyebrow={s.eyebrow}
+      title={s.title}
+      lede={s.lede}
     >
       <div className="mb-8 flex flex-wrap gap-2">
         {tabs.map((t) => (
