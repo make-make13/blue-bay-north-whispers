@@ -1289,9 +1289,20 @@ function ServiceModal({ item, onClose }: { item: ServiceItem | null; onClose: ()
 
 const TRANSFER_GALLERY = pics("transfer");
 
-const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = [
+type RouteCard = {
+  title: string;
+  direction: "to" | "from";
+  column: "Откуда" | "Куда";
+  icon: "to-hotel" | "from-hotel" | "to-airport" | "from-airport";
+  routes: Array<[string, string]>;
+};
+
+const ROUTE_CARDS: RouteCard[] = [
   {
     title: "В отель «Голубая Бухта»",
+    direction: "to",
+    column: "Откуда",
+    icon: "to-hotel",
     routes: [
       ["Первомайский район", "3 000 ₽"],
       ["Октябрьский район", "3 200 ₽"],
@@ -1302,6 +1313,9 @@ const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = 
   },
   {
     title: "Из отеля «Голубая Бухта»",
+    direction: "from",
+    column: "Куда",
+    icon: "from-hotel",
     routes: [
       ["Кола", "3 600 ₽"],
       ["Первомайский район", "3 600 ₽"],
@@ -1312,6 +1326,9 @@ const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = 
   },
   {
     title: "В аэропорт",
+    direction: "to",
+    column: "Откуда",
+    icon: "to-airport",
     routes: [
       ["Первомайский район", "2 400 ₽"],
       ["Октябрьский район", "2 800 ₽"],
@@ -1321,20 +1338,56 @@ const ROUTE_GROUPS: Array<{ title: string; routes: Array<[string, string]> }> = 
   },
   {
     title: "Из аэропорта",
+    direction: "from",
+    column: "Куда",
+    icon: "from-airport",
     routes: [
       ["Мурманск", "3 000 ₽"],
       ["Териберка", "14 000 ₽"],
     ],
   },
-  {
-    title: "Мурманск и Териберка",
-    routes: [
-      ["Мурманск → Териберка", "13 000 ₽"],
-      ["Териберка → Мурманск", "17 000 ₽"],
-      ["Мурманск → Териберка → Мурманск", "24 000 ₽"],
-    ],
-  },
 ];
+
+const TERIBERKA_ROUTES: Array<[string, string]> = [
+  ["Мурманск → Териберка", "13 000 ₽"],
+  ["Териберка → Мурманск", "17 000 ₽"],
+  ["Мурманск → Териберка → Мурманск", "24 000 ₽"],
+];
+
+function RouteCardIcon({ kind }: { kind: RouteCard["icon"] }) {
+  const cls = "h-5 w-5 text-teal";
+  const common = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, className: cls };
+  if (kind === "to-hotel") {
+    return (
+      <svg {...common}>
+        <path d="M4 20V10l8-6 8 6v10" /><path d="M9 20v-6h6v6" />
+        <path d="M2 20h20" />
+      </svg>
+    );
+  }
+  if (kind === "from-hotel") {
+    return (
+      <svg {...common}>
+        <path d="M4 20V10l8-6 8 6v10" /><path d="M9 20v-6h6v6" />
+        <path d="M14 4l6 0M20 4l0 6" />
+      </svg>
+    );
+  }
+  if (kind === "to-airport") {
+    return (
+      <svg {...common}>
+        <path d="M21 16l-9-3-3 3-2-1 3-4-8-3 2-2 9 2 4-5c1-1 3-1 3 1l-2 5 3 4z" />
+        <path d="M4 21h16" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...common}>
+      <path d="M3 16l9-3 3 3 2-1-3-4 8-3-2-2-9 2-4-5c-1-1-3-1-3 1l2 5-3 4z" />
+      <path d="M4 21h16" />
+    </svg>
+  );
+}
 
 function TransferIcon({ kind }: { kind: "seats" | "luggage" | "comfort" }) {
   const common = "h-4 w-4 text-teal";
