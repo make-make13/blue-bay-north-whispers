@@ -77,20 +77,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Загородный отель «Голубая Бухта» Мурманск" },
+      { title: "Загородный отель «Голубая Бухта» — Мурманск, берег Туломы" },
       {
         name: "description",
         content:
-          "Коттеджи, русская баня на дровах, купель фурако, беседки и сезонные активности на берегу реки Тулома в 40 км от Мурманска.",
+          "Коттеджи и блоки таунхауса на 2–12 гостей, русская баня на дровах, купель фурако, беседки, трансфер и сезонные активности в 40 км от Мурманска.",
       },
-      { property: "og:title", content: "Загородный отель «Голубая Бухта» Мурманск" },
+      { property: "og:title", content: "Загородный отель «Голубая Бухта» — Мурманск, берег Туломы" },
       {
         property: "og:description",
         content:
-          "Коттеджи, русская баня на дровах, купель фурако и сезонные активности за полярным кругом.",
+          "Коттеджи и блоки таунхауса на 2–12 гостей, русская баня на дровах, купель фурако, беседки, трансфер и сезонные активности в 40 км от Мурманска.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Загородный отель «Голубая Бухта» — Мурманск, берег Туломы" },
+      { name: "twitter:description", content: "Коттеджи и блоки таунхауса на 2–12 гостей, русская баня на дровах, купель фурако, беседки, трансфер и сезонные активности в 40 км от Мурманска." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/333221ef-9aa2-41a1-92e3-14e67b65c7db/id-preview-540c15a9--c4b911ee-e93b-461d-9655-8d414654e6c6.lovable.app-1785289978169.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/333221ef-9aa2-41a1-92e3-14e67b65c7db/id-preview-540c15a9--c4b911ee-e93b-461d-9655-8d414654e6c6.lovable.app-1785289978169.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
